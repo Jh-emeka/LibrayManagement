@@ -22,7 +22,7 @@ public class Person implements Serializable {
     }
 
 
-    public static Person newTrackFromResultSet(ResultSet resultSet) throws SQLException {
+    public static Person newPersonFromResultSet(ResultSet resultSet) throws SQLException {
         return new Person(
                 resultSet.getInt(1),
                 resultSet.getString(2),
@@ -55,7 +55,7 @@ public class Person implements Serializable {
         return library_card;
     }
 
-    public void setLibrary_card(int library_card) {
+    public void setLibrary_card(double library_card) {
         this.library_card = library_card;
     }
 

@@ -1,10 +1,6 @@
 package Clientpkg;
 
-import both.Book;
-
-import both.Parcel;
-
-import both.Command;
+import both.*;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
@@ -27,7 +23,10 @@ public class Client {
     private ObjectInputStream objectInputStream;
     private Socket socket;
     private Book_table myTableModel;
-    private JTable myTable;
+    private Person_table PersonTableModel;
+    private JTable bookTable;
+    private JTable personTable;
+    private JScrollPane scrollPane1;
     private JScrollPane scrollPane2;
     private JPanel tab1;
     private JPanel tab2;
@@ -91,32 +90,40 @@ public class Client {
         tabbedPane.addTab("Books", tab1);
         tab1.setLayout(null);
         tab1.setBounds(0,0,1000,500);
-
         myTableModel = new Book_table();
-        myTable = new JTable(myTableModel);
-        myTable.setBounds(0,0,1000,500);
+        bookTable = new JTable(myTableModel);
+        bookTable.setBounds(0,0,1000,500);
+        scrollPane1 = new JScrollPane(bookTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane1.setBounds(bookTable.getBounds());
 
 
-        this.scrollPane2 = new JScrollPane(myTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        this.scrollPane2.setBounds(myTable.getBounds());
-
-
-        this.tab2 = new JPanel();
+        tab2 = new JPanel();
         tabbedPane.addTab("Person", tab2);
-        tab2.setLayout(new GridLayout());
+        tab2.setLayout(null);
+        tab2.setBounds(0,0,1000,500);
+        PersonTableModel = new Person_table();
+        personTable = new JTable(PersonTableModel);
+        personTable.setBounds(0,0,1000,500);
+        scrollPane2 = new JScrollPane(personTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane2.setBounds(personTable.getBounds());
+        tab2.add(scrollPane2);
 
 
 
-        this.tab3 = new JPanel();
+        tab3 = new JPanel();
         tabbedPane.addTab("Books On loan", tab3);
         tab3.setLayout(new GridLayout());
 
-        this.tab4 = new JPanel();
+
+
+
+
+        tab4 = new JPanel();
         tabbedPane.addTab("Add new book", tab4);
         tab4.setLayout(null);
 
 
-        this.tab5 = new JPanel();
+        tab5 = new JPanel();
         tabbedPane.addTab("Loan a book", tab5);
         JButton loan = new JButton(" Create New loan");
         loan.setBounds(500, 270, 200, 30);
@@ -238,7 +245,8 @@ public class Client {
             @Override
             public void actionPerformed(ActionEvent e) {
                 reconnectToServer();
-                getTablesFromServer();
+                getBookTable();
+                getPersonTable();
 
 
 
@@ -246,37 +254,37 @@ public class Client {
         });
 
 
-        myTable.addMouseListener(new MouseInputListener() {
+        bookTable.addMouseListener(new MouseInputListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
 
 
-                myTable = (JTable)e.getSource();
-                int row = myTable.rowAtPoint( e.getPoint() );
+                bookTable = (JTable)e.getSource();
+                int row = bookTable.rowAtPoint( e.getPoint() );
 
 
 
-                textFieldBookId.setText(String.valueOf(myTable.getModel().getValueAt(row, 0)));
+                textFieldBookId.setText(String.valueOf(bookTable.getModel().getValueAt(row, 0)));
 
-                textFieldTitle.setText(String.valueOf(myTable.getModel().getValueAt(row, 1)));
+                textFieldTitle.setText(String.valueOf(bookTable.getModel().getValueAt(row, 1)));
 
-                textFieldAuthors.setText(String.valueOf(myTable.getModel().getValueAt(row, 2)));
+                textFieldAuthors.setText(String.valueOf(bookTable.getModel().getValueAt(row, 2)));
 
-                textFieldAverageRatings.setText(String.valueOf(myTable.getModel().getValueAt(row, 3)));
+                textFieldAverageRatings.setText(String.valueOf(bookTable.getModel().getValueAt(row, 3)));
 
-                textFieldIsbn.setText(String.valueOf(myTable.getModel().getValueAt(row, 4)));
+                textFieldIsbn.setText(String.valueOf(bookTable.getModel().getValueAt(row, 4)));
 
-                textFieldIsbn13.setText(String.valueOf(myTable.getModel().getValueAt(row, 5)));
+                textFieldIsbn13.setText(String.valueOf(bookTable.getModel().getValueAt(row, 5)));
 
-                textFieldLanguageCode.setText(String.valueOf(myTable.getModel().getValueAt(row, 6)));
+                textFieldLanguageCode.setText(String.valueOf(bookTable.getModel().getValueAt(row, 6)));
 
-                textFieldNumPages.setText(String.valueOf(myTable.getModel().getValueAt(row, 7)));
+                textFieldNumPages.setText(String.valueOf(bookTable.getModel().getValueAt(row, 7)));
 
-                textFieldRatingsCount.setText(String.valueOf(myTable.getModel().getValueAt(row, 8)));
+                textFieldRatingsCount.setText(String.valueOf(bookTable.getModel().getValueAt(row, 8)));
 
-                textFieldTextReviewCount.setText(String.valueOf(myTable.getModel().getValueAt(row, 8)));
+                textFieldTextReviewCount.setText(String.valueOf(bookTable.getModel().getValueAt(row, 8)));
 
-                textFieldQuantity.setText(String.valueOf(myTable.getModel().getValueAt(row, 8)));
+                textFieldQuantity.setText(String.valueOf(bookTable.getModel().getValueAt(row, 8)));
 
 
             }
@@ -337,21 +345,19 @@ public class Client {
     }
 
 
-    private void getTablesFromServer(){
+    private void getBookTable(){
         if (objectOutputStream != null && objectInputStream != null) {
 
-            // 1. read data from textfiel
+            // 1. read data from textfield
 
             String getTables = "get tables";
-
-
 
             // 2. send data to server
 
             // Parcel envelope = null;
             try {
 
-                objectOutputStream.writeObject(new Parcel(Command.SELECT,getTables));
+                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.Book, getTables));
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             }
@@ -382,7 +388,65 @@ public class Client {
 
 
                     myTableModel.readData(reply);
-                    tab1.add(scrollPane2);
+                    tab1.add(scrollPane1);
+
+
+                } catch (NullPointerException ex) {
+                    //labelStatus.setText("NullPointerException " + ex);
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else {
+            System.out.println("You must connect to the server first!!");
+        }
+
+
+    }
+
+    private void getPersonTable()
+    {
+        if (objectOutputStream != null && objectInputStream != null) {
+
+            // 1. read data from textfield
+
+            String getTables = "get tables";
+
+            // 2. send data to server
+
+            // Parcel envelope = null;
+            try {
+
+                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.Person, getTables));
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            }
+
+            // 3. receive reply from server
+
+            ArrayList<Person> reply = new ArrayList<>();
+
+            System.out.println("Status: waiting for reply from server");
+            try {
+                reply = (ArrayList<Person>) objectInputStream.readObject();
+
+                System.out.println("Status: received reply from server");
+                // objectOutputStream.reset();
+
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            } catch (ClassNotFoundException ex) {
+                System.out.println("ClassNotFoundException " + ex);
+            }
+
+            // 4. display message on textarea
+            if (reply != null) {
+
+                try {
+                    // reply.forEach((track)-> System.out.println(track));
+
+
+                    PersonTableModel.readData(reply);
+                    tab2.add(scrollPane2);
 
 
                 } catch (NullPointerException ex) {
