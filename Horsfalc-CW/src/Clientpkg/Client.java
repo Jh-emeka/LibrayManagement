@@ -7,10 +7,12 @@ import both.Parcel;
 import both.Command;
 
 import javax.swing.*;
+import javax.swing.event.MouseInputListener;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -54,6 +56,7 @@ public class Client {
     private JLabel ratings_count;
     private JLabel text_review_count;
     private JLabel quantity;
+
 
 
 
@@ -202,6 +205,8 @@ public class Client {
 
 
 
+
+
         JButton add_book = new JButton("Add");
         add_book.setBounds(1190, 500, 100, 20);
         tab1.add(add_book);
@@ -239,6 +244,81 @@ public class Client {
 
             }
         });
+
+
+        myTable.addMouseListener(new MouseInputListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+
+                myTable = (JTable)e.getSource();
+                int row = myTable.rowAtPoint( e.getPoint() );
+
+
+
+                textFieldBookId.setText(String.valueOf(myTable.getModel().getValueAt(row, 0)));
+
+                textFieldTitle.setText(String.valueOf(myTable.getModel().getValueAt(row, 1)));
+
+                textFieldAuthors.setText(String.valueOf(myTable.getModel().getValueAt(row, 2)));
+
+                textFieldAverageRatings.setText(String.valueOf(myTable.getModel().getValueAt(row, 3)));
+
+                textFieldIsbn.setText(String.valueOf(myTable.getModel().getValueAt(row, 4)));
+
+                textFieldIsbn13.setText(String.valueOf(myTable.getModel().getValueAt(row, 5)));
+
+                textFieldLanguageCode.setText(String.valueOf(myTable.getModel().getValueAt(row, 6)));
+
+                textFieldNumPages.setText(String.valueOf(myTable.getModel().getValueAt(row, 7)));
+
+                textFieldRatingsCount.setText(String.valueOf(myTable.getModel().getValueAt(row, 8)));
+
+                textFieldTextReviewCount.setText(String.valueOf(myTable.getModel().getValueAt(row, 8)));
+
+                textFieldQuantity.setText(String.valueOf(myTable.getModel().getValueAt(row, 8)));
+
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+
+            }
+        });
+
+
+
+
+
+
+
+
 
     }
 
@@ -283,9 +363,6 @@ public class Client {
             System.out.println("Status: waiting for reply from server");
             try {
                 reply = (ArrayList<Book>) objectInputStream.readObject();
-
-
-
 
 
                 System.out.println("Status: received reply from server");
