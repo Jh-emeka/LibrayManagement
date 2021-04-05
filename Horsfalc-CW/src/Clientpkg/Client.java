@@ -48,6 +48,13 @@ public class Client {
     private JTextField textFieldRatingsCount;
     private JTextField textFieldTextReviewCount;
     private JTextField textFieldQuantity;
+
+    private JTextField textFieldPersonId;
+    private JTextField textFieldFirstName;
+    private JTextField textFieldLastName;
+    private JTextField textFieldLibraryCard;
+
+
     private JLabel bookId;
     private JLabel title;
     private JLabel authors;
@@ -59,6 +66,12 @@ public class Client {
     private JLabel ratings_count;
     private JLabel text_review_count;
     private JLabel quantity;
+
+    private JLabel personId;
+    private JLabel firstName;
+    private JLabel lastName;
+    private JLabel libraryCard;
+
 
 
 
@@ -127,19 +140,17 @@ public class Client {
 
 
 
-
-
-
         tab4 = new JPanel();
         tabbedPane.addTab("Add new book", tab4);
         tab4.setLayout(null);
-
 
         tab5 = new JPanel();
         tabbedPane.addTab("Loan a book", tab5);
         JButton loan = new JButton(" Create New loan");
         loan.setBounds(500, 270, 200, 30);
         tab5.add(loan);
+
+
 
         bookId = new JLabel("book ID:");
         bookId.setBounds(1120,20,200,20);
@@ -220,20 +231,63 @@ public class Client {
         textFieldQuantity.setBounds(1235,320, 200,20);
         tab1.add(quantity);
         tab1.add(textFieldQuantity);
+        //---------------------------------------------------------------------------------------
+
+        personId= new JLabel("Person ID:");
+        personId.setBounds(1120,20,200,20);
+        textFieldPersonId = new JTextField();
+        textFieldPersonId.setBounds(1235,20,200,20);
+        textFieldPersonId.setEditable(false);
+        tab2.add(personId);
+        tab2.add(textFieldPersonId);
+
+
+        firstName= new JLabel("First Name:");
+        firstName.setBounds(1120,50, 200,20);
+        textFieldFirstName = new JTextField();
+        textFieldFirstName.setBounds(1235,50, 200,20);
+        tab2.add(firstName);
+        tab2.add(textFieldFirstName);
+
+        lastName = new JLabel("Last Name:");
+        lastName.setBounds(1120,80, 200,20);
+        textFieldLastName = new JTextField();
+        textFieldLastName.setBounds(1235,80, 200,20);
+        tab2.add(lastName);
+        tab2.add(textFieldLastName);
+
+        libraryCard = new JLabel("LibraryCard:");
+        libraryCard.setBounds(1120,110, 200,20);
+        textFieldLibraryCard = new JTextField();
+        textFieldLibraryCard.setBounds(1235,110, 200,20);
+        tab2.add(average_ratings);
+        tab2.add(textFieldAverageRatings);
 
 
         JButton add_book = new JButton("Add");
         add_book.setBounds(1190, 500, 100, 20);
         tab1.add(add_book);
 
+        JButton add_person = new JButton("Add");
+        add_person.setBounds(1190, 150, 100, 20);
+        tab2.add(add_person);
+
+
         JButton update = new JButton("Update");
         update.setBounds(1290, 500, 100, 20);
         tab1.add(update);
+
+        JButton update_Person = new JButton("Update");
+        update_Person.setBounds(1290, 150, 100, 20);
+        tab2.add(update_Person);
 
         JButton delete = new JButton("Delete");
         delete.setBounds(1390,500,100,20);
         tab1.add(delete);
 
+        JButton delete_Person = new JButton("Delete");
+        delete_Person.setBounds(1390,150,100,20);
+        tab2.add(delete_Person);
 
         f.add(tabbedPane);
         f.add(print);
@@ -328,6 +382,8 @@ public class Client {
 
             }
         });
+
+
 
 
     }
