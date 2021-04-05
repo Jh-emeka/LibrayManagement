@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -24,10 +25,13 @@ public class Client {
     private Socket socket;
     private Book_table myTableModel;
     private Person_table PersonTableModel;
+    private Onloan_table onLoanTableModel;
     private JTable bookTable;
     private JTable personTable;
+    private JTable onLoanTable;
     private JScrollPane scrollPane1;
     private JScrollPane scrollPane2;
+    private JScrollPane scrollPane3;
     private JPanel tab1;
     private JPanel tab2;
     private JPanel tab3;
@@ -112,7 +116,15 @@ public class Client {
 
         tab3 = new JPanel();
         tabbedPane.addTab("Books On loan", tab3);
-        tab3.setLayout(new GridLayout());
+        tab3.setLayout(null);
+        tab3.setBounds(0,0,1000,500);
+        onLoanTableModel = new Onloan_table();
+        onLoanTable = new JTable(onLoanTableModel);
+        onLoanTable.setBounds(0,0,1000,500);
+        scrollPane3 = new JScrollPane(onLoanTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane3.setBounds(onLoanTable.getBounds());
+        tab3.add(scrollPane3);
+
 
 
 
@@ -210,10 +222,6 @@ public class Client {
         tab1.add(textFieldQuantity);
 
 
-
-
-
-
         JButton add_book = new JButton("Add");
         add_book.setBounds(1190, 500, 100, 20);
         tab1.add(add_book);
@@ -247,6 +255,7 @@ public class Client {
                 reconnectToServer();
                 getBookTable();
                 getPersonTable();
+                getOnLoanTable();
 
 
 
@@ -321,13 +330,6 @@ public class Client {
         });
 
 
-
-
-
-
-
-
-
     }
 
 
@@ -357,7 +359,7 @@ public class Client {
             // Parcel envelope = null;
             try {
 
-                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.Book, getTables));
+                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.BOOK, getTables));
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             }
@@ -416,7 +418,7 @@ public class Client {
             // Parcel envelope = null;
             try {
 
-                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.Person, getTables));
+                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.PERSON, getTables));
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             }
@@ -462,12 +464,75 @@ public class Client {
     }
 
 
+    private void getOnLoanTable()
+    {
+        if (objectOutputStream != null && objectInputStream != null) {
+
+            // 1. read data from textfield
+
+            String getTables = "get tables";
+
+            // 2. send data to server
+
+            // Parcel envelope = null;
+            try {
+
+                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.ONLOAN, getTables));
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            }
+
+            // 3. receive reply from server
+
+            ArrayList<On_loan> reply = new ArrayList<>();
+
+            System.out.println("Status: waiting for reply from server");
+            try {
+                reply = (ArrayList<On_loan>) objectInputStream.readObject();
+
+                System.out.println("Status: received reply from server");
+                // objectOutputStream.reset();
+
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            } catch (ClassNotFoundException ex) {
+                System.out.println("ClassNotFoundException " + ex);
+            }
+
+            // 4. display message on textarea
+            if (reply != null) {
+
+                try {
+                    // reply.forEach((track)-> System.out.println(track));
+
+
+                    onLoanTableModel.readData(reply);
+                    tab3.add(scrollPane3);
+
+
+                } catch (NullPointerException ex) {
+                    //labelStatus.setText("NullPointerException " + ex);
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else {
+            System.out.println("You must connect to the server first!!");
+        }
+
+
+    }
+
+
+
+
+
+
     private void reconnectToServer() {
 
         closeConnection();
         System.out.println("Status: Attempting connection to server");
         try {
-            socket = new Socket("127.0.0.1", 2200);
+            socket = new Socket("127.0.0.1", 3000);
 
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
