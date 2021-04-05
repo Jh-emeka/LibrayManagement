@@ -54,6 +54,15 @@ public class Client {
     private JTextField textFieldLastName;
     private JTextField textFieldLibraryCard;
 
+    private JTextField textFieldLoanId;
+    private JTextField textFieldBookId2;
+    private JTextField textFieldPersonId2;
+    private JTextField textFieldLoanPeriod;
+    private JTextField textFieldLoanStart;
+    private JTextField textFieldLoanEnd;
+    private JTextField textFieldReturnedDate;
+    private JTextField textFieldReturnStatus;
+
 
     private JLabel bookId;
     private JLabel title;
@@ -72,8 +81,14 @@ public class Client {
     private JLabel lastName;
     private JLabel libraryCard;
 
-
-
+    private JLabel loanId;
+    private JLabel bookId2;
+    private JLabel personId2;
+    private JLabel loanPeriod;
+    private JLabel loanStart;
+    private JLabel loanEnd;
+    private JLabel returnedDate;
+    private JLabel returnStatus;
 
 
 
@@ -247,7 +262,7 @@ public class Client {
         textFieldQuantity.setBounds(1235,320, 200,20);
         tab1.add(quantity);
         tab1.add(textFieldQuantity);
-        //---------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------
 
         personId= new JLabel("Person ID:");
         personId.setBounds(1120,20,200,20);
@@ -279,6 +294,100 @@ public class Client {
         tab2.add(libraryCard);
         tab2.add(textFieldLibraryCard);
 
+        //--------------------------------------------------------------------------------------------------------------
+
+        loanId = new JLabel("Loan ID:");
+        loanId.setBounds(1120,20,200,20);
+        textFieldLoanId = new JTextField();
+        textFieldLoanId.setBounds(1235,20,200,20);
+        textFieldLoanId.setEditable(false);
+        tab3.add(loanId);
+        tab3.add(textFieldLoanId);
+
+        bookId2 = new JLabel("Book Id:");
+        bookId2.setBounds(1120,50, 200,20);
+        textFieldBookId2 = new JTextField();
+        textFieldBookId2.setBounds(1235,50, 200,20);
+        tab3.add(bookId2);
+        tab3.add(textFieldBookId2);
+
+        personId2 = new JLabel("Person Id:");
+        personId2.setBounds(1120,80, 200,20);
+        textFieldPersonId2 = new JTextField();
+        textFieldPersonId2.setBounds(1235,80, 200,20);
+        tab3.add(personId2);
+        tab3.add(textFieldPersonId2);
+
+        loanPeriod = new JLabel("Loan Period:");
+        loanPeriod.setBounds(1120,110, 200,20);
+        textFieldLoanPeriod = new JTextField();
+        textFieldLoanPeriod.setBounds(1235,110, 200,20);
+        tab3.add(loanPeriod);
+        tab3.add(textFieldLoanPeriod);
+
+        loanStart = new JLabel("Loan Start:");
+        loanStart.setBounds(1120,140, 200,20);
+        textFieldLoanStart = new JTextField();
+        textFieldLoanStart.setBounds(1235,140, 200,20);
+        tab3.add(loanStart);
+        tab3.add(textFieldLoanStart);
+
+
+        loanEnd = new JLabel("Loan End:");
+        loanEnd.setBounds(1120,170, 200,20);
+        textFieldLoanEnd = new JTextField();
+        textFieldLoanEnd.setBounds(1235,170, 200,20);
+        tab3.add(loanEnd);
+        tab3.add(textFieldLoanEnd);
+
+        returnedDate = new JLabel("Returned Date:");
+        returnedDate.setBounds(1120,200, 200,20);
+        textFieldReturnedDate = new JTextField();
+        textFieldReturnedDate.setBounds(1235,200, 200,20);
+        tab3.add(returnedDate);
+        tab3.add(textFieldReturnedDate);
+
+        returnStatus = new JLabel("Return Status:");
+        returnStatus.setBounds(1120,230, 200,20);
+        textFieldReturnStatus = new JTextField();
+        textFieldReturnStatus.setBounds(1235,230, 200,20);
+        tab3.add(returnStatus);
+        tab3.add(textFieldReturnStatus);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         JButton add_book = new JButton("Add");
         add_book.setBounds(1190, 500, 100, 20);
@@ -287,6 +396,10 @@ public class Client {
         JButton add_person = new JButton("Add");
         add_person.setBounds(1190, 150, 100, 20);
         tab2.add(add_person);
+
+        JButton add_loan = new JButton("Add");
+        add_loan.setBounds(1190, 300, 100, 20);
+        tab3.add(add_loan);
 
 
         JButton update = new JButton("Update");
@@ -297,6 +410,12 @@ public class Client {
         update_Person.setBounds(1290, 150, 100, 20);
         tab2.add(update_Person);
 
+        JButton update_loan = new JButton("Update");
+        update_loan.setBounds(1290, 300, 100, 20);
+        tab3.add(update_loan);
+
+
+
         JButton delete = new JButton("Delete");
         delete.setBounds(1390,500,100,20);
         tab1.add(delete);
@@ -304,6 +423,12 @@ public class Client {
         JButton delete_Person = new JButton("Delete");
         delete_Person.setBounds(1390,150,100,20);
         tab2.add(delete_Person);
+
+
+        JButton delete_loan = new JButton("Delete");
+        delete_loan.setBounds(1390,300,100,20);
+        tab3.add(delete_loan);
+
 
         tab1.add(searchBook);
         tab1.add(searchButtonTab1);
