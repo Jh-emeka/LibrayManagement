@@ -356,39 +356,6 @@ public class Client {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         JButton add_book = new JButton("Add");
         add_book.setBounds(1190, 500, 100, 20);
         tab1.add(add_book);
@@ -582,6 +549,64 @@ public class Client {
              }
          });
 
+
+         onLoanTable.addMouseListener(new MouseInputListener() {
+             @Override
+             public void mouseClicked(MouseEvent e) {
+
+                 onLoanTable = (JTable)e.getSource();
+                 int row = onLoanTable.rowAtPoint( e.getPoint() );
+
+
+
+                 textFieldLoanId.setText(String.valueOf(onLoanTable.getModel().getValueAt(row, 0)));
+
+                 textFieldBookId2.setText(String.valueOf(onLoanTable.getModel().getValueAt(row, 1)));
+
+                 textFieldPersonId2.setText(String.valueOf(onLoanTable.getModel().getValueAt(row, 2)));
+
+                 textFieldLoanPeriod.setText(String.valueOf(onLoanTable.getModel().getValueAt(row, 3)));
+
+                 textFieldLoanStart.setText(String.valueOf(onLoanTable.getModel().getValueAt(row, 4)));
+
+                 textFieldLoanEnd.setText(String.valueOf(onLoanTable.getModel().getValueAt(row, 5)));
+
+                 textFieldReturnedDate.setText(String.valueOf(onLoanTable.getModel().getValueAt(row, 6)));
+
+                 textFieldReturnStatus.setText(String.valueOf(onLoanTable.getModel().getValueAt(row, 7)));
+
+             }
+
+             @Override
+             public void mousePressed(MouseEvent e) {
+
+             }
+
+             @Override
+             public void mouseReleased(MouseEvent e) {
+
+             }
+
+             @Override
+             public void mouseEntered(MouseEvent e) {
+
+             }
+
+             @Override
+             public void mouseExited(MouseEvent e) {
+
+             }
+
+             @Override
+             public void mouseDragged(MouseEvent e) {
+
+             }
+
+             @Override
+             public void mouseMoved(MouseEvent e) {
+
+             }
+         });
 
 
     }
