@@ -33,7 +33,7 @@ public class Book implements Serializable {
         this.quantity = quantity;
     }
 
-    public static Book newTrackFromResultSet(ResultSet resultSet) throws SQLException {
+    public static Book newBookFromResultSet(ResultSet resultSet) throws SQLException {
         return new  both.Book(
                 resultSet.getInt(1),
                 resultSet.getString(2),
@@ -137,26 +137,6 @@ public class Book implements Serializable {
 
 
 
-
-
-
-
-
-
-//    @Override
-//    public String toString() {
-//        return "Track{" +
-//                "trackId=" + trackId +
-//                ", name='" + name + '\'' +
-//                ", albumId=" + albumId +
-//                ", mediaTypeId=" + mediaTypeId +
-//                ", genreId=" + genreId +
-//                ", composer='" + composer + '\'' +
-//                ", milliseconds=" + milliseconds +
-//                ", bytes=" + bytes +
-//                ", unitPrice=" + unitPrice +
-//                '}';
-//    }
 
 }
 
