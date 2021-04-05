@@ -389,15 +389,15 @@ public class Client {
              public void mouseClicked(MouseEvent e) {
 
                  personTable = (JTable)e.getSource();
-                 int rows = personTable.rowAtPoint( e.getPoint() );
+                 int row = personTable.rowAtPoint( e.getPoint() );
 
-                 textFieldPersonId.setText(String.valueOf(personTable.getModel().getValueAt(rows, 0)));
+                 textFieldPersonId.setText(String.valueOf(personTable.getModel().getValueAt(row, 0)));
 
-                 textFieldFirstName.setText(String.valueOf(personTable.getModel().getValueAt(rows, 1)));
+                 textFieldFirstName.setText(String.valueOf(personTable.getModel().getValueAt(row, 1)));
 
-                 textFieldLastName.setText(String.valueOf(personTable.getModel().getValueAt(rows, 2)));
+                 textFieldLastName.setText(String.valueOf(personTable.getModel().getValueAt(row, 2)));
 
-                 textFieldLibraryCard.setText(String.valueOf(personTable.getModel().getValueAt(rows, 3)));
+                 textFieldLibraryCard.setText(String.valueOf(personTable.getModel().getValueAt(row, 3)));
 
              }
 
