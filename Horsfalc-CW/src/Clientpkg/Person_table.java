@@ -18,7 +18,7 @@ public class Person_table extends AbstractTableModel {
             int personId = datum.getPersonId();
             String firstName = datum.getFirst_name();
             String lastName = datum.getLast_name();
-            double libraryCard = datum.getLibraryCard();
+            int libraryCard = (int) datum.getLibraryCard();
 
             Object[] tData = {personId, firstName, lastName, libraryCard};
             personData.add(tData);
