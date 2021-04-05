@@ -7,17 +7,19 @@ public class  Parcel implements Serializable {
 
     private  Command command;
 
-    private  Object newBook;
+    private  Table table;
 
-    public Parcel(Command command,Object newBook){
+    private  Object newData;
+
+    public Parcel(Command command, Table table, Object newData){
 
         this.command = command;
 
-        this.newBook = newBook;
+        this.table = table;
+
+        this.newData = newData;
 
     }
-
-
 
     public Command getCommand()
     {
@@ -26,9 +28,17 @@ public class  Parcel implements Serializable {
 
     }
 
-    public Object getBook()
+    public Table getTable()
     {
-        return this.newBook;
+
+        return this.table;
+
+
+    }
+
+    public Object getNewData()
+    {
+        return this.newData;
 
     }
 }
