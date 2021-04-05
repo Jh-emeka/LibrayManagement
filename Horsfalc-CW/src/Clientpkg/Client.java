@@ -94,11 +94,27 @@ public class Client {
         JButton print = new JButton("Print");
         print.setBounds(4, 170, 200, 50);
 
-        JTextField search = new JTextField();
-        search.setBounds(1000, 270, 200, 30);
+        JTextField searchBook = new JTextField();
+        searchBook.setBounds(300, 630, 200, 30);
 
-        JButton searchbutton = new JButton("Search");
-        searchbutton.setBounds(1210, 270, 100, 30);
+        JTextField searchPerson = new JTextField();
+        searchPerson.setBounds(300, 630, 200, 30);
+
+        JTextField searchOnLoan = new JTextField();
+        searchOnLoan.setBounds(300, 630, 200, 30);
+
+
+        JButton searchButtonTab1 = new JButton("Search");
+        searchButtonTab1.setBounds(500, 630, 100, 30);
+
+        JButton searchButtonTab2 = new JButton("Search");
+        searchButtonTab2.setBounds(500, 630, 100, 30);
+
+        JButton searchButtonTab3 = new JButton("Search");
+        searchButtonTab3.setBounds(500, 630, 100, 30);
+
+
+
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setBounds(5,300,1500,700);
@@ -289,11 +305,20 @@ public class Client {
         delete_Person.setBounds(1390,150,100,20);
         tab2.add(delete_Person);
 
+        tab1.add(searchBook);
+        tab1.add(searchButtonTab1);
+
+        tab2.add(searchPerson);
+        tab2.add(searchButtonTab2);
+
+        tab3.add(searchOnLoan);
+        tab3.add(searchButtonTab3);
+
         f.add(tabbedPane);
         f.add(print);
         f.add(connect);
-        f.add(search);
-        f.add(searchbutton);
+       // f.add(search);
+       // f.add(searchbutton);
 
 
 
@@ -463,7 +488,7 @@ public class Client {
             // Parcel envelope = null;
             try {
 
-                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.BOOK, getTables));
+                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.BOOK,getTables));
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             }
@@ -522,7 +547,7 @@ public class Client {
             // Parcel envelope = null;
             try {
 
-                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.PERSON, getTables));
+                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.PERSON,getTables));
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             }
@@ -581,7 +606,7 @@ public class Client {
             // Parcel envelope = null;
             try {
 
-                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.ONLOAN, getTables));
+                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.ONLOAN,getTables));
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             }
