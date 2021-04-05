@@ -260,8 +260,8 @@ public class Client {
         libraryCard.setBounds(1120,110, 200,20);
         textFieldLibraryCard = new JTextField();
         textFieldLibraryCard.setBounds(1235,110, 200,20);
-        tab2.add(average_ratings);
-        tab2.add(textFieldAverageRatings);
+        tab2.add(libraryCard);
+        tab2.add(textFieldLibraryCard);
 
 
         JButton add_book = new JButton("Add");
@@ -383,6 +383,54 @@ public class Client {
             }
         });
 
+
+         personTable.addMouseListener(new MouseInputListener() {
+             @Override
+             public void mouseClicked(MouseEvent e) {
+
+                 personTable = (JTable)e.getSource();
+                 int row = personTable.rowAtPoint( e.getPoint() );
+
+                 textFieldPersonId.setText(String.valueOf(personTable.getModel().getValueAt(row, 0)));
+
+                 textFieldFirstName.setText(String.valueOf(personTable.getModel().getValueAt(row, 1)));
+
+                 textFieldLastName.setText(String.valueOf(personTable.getModel().getValueAt(row, 2)));
+
+                 textFieldLibraryCard.setText(String.valueOf(personTable.getModel().getValueAt(row, 3)));
+
+             }
+
+             @Override
+             public void mousePressed(MouseEvent e) {
+
+             }
+
+             @Override
+             public void mouseReleased(MouseEvent e) {
+
+             }
+
+             @Override
+             public void mouseEntered(MouseEvent e) {
+
+             }
+
+             @Override
+             public void mouseExited(MouseEvent e) {
+
+             }
+
+             @Override
+             public void mouseDragged(MouseEvent e) {
+
+             }
+
+             @Override
+             public void mouseMoved(MouseEvent e) {
+
+             }
+         });
 
 
 
