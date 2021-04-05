@@ -1,11 +1,11 @@
 package Serverpkg;
 
-import both.Command;
-import both.Parcel;
-import both.Book;
+import both.*;
+
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -17,12 +17,16 @@ public class ClientHandler implements Runnable {
     private static int connectionCount = 0;
     private int connectionNumber;
 
-    public List<Book> tracks;
+    public List<Book> books;
+    public List<Person> person;
+    public List<On_loan> onLoan;
 
-    public ClientHandler(Socket clientSocket, List<Book> tracks) throws IOException {
+    public ClientHandler(Socket clientSocket, List<Book> books,List<Person> person, List<On_loan> onLoan ) throws IOException {
 
         this.newSocket = clientSocket;
-        this.tracks = tracks;
+        this.books = books;
+        this.person= person;
+        this.onLoan = onLoan;
 
         connectionCount++;
         connectionNumber = connectionCount;
@@ -44,19 +48,50 @@ public class ClientHandler implements Runnable {
             System.out.println("Server: Waiting for data from client...");
             Parcel parcelRead;
 
+
             while ((parcelRead = (Parcel) objectInputStream.readObject()) != null) {
 
                 System.out.println("Server: Read data from client: " + parcelRead + ".");
 
-                List<Book> reply = null;
 
-                if (parcelRead.getCommand() == Command.SELECT) {
 
-                    reply = tracks;
+                if ((parcelRead.getCommand() == Command.SELECT) && (parcelRead.getTable() == Table.BOOK)) {
+
+                    List<Book> reply;
+
+                    reply = books;
 
                     objectOutputStream.writeObject(reply);
 
                 }
+
+                if((parcelRead.getCommand() == Command.SELECT) && (parcelRead.getTable() == Table.PERSON))
+                {
+
+                    List<Person> reply;
+
+                    reply = person;
+
+                    objectOutputStream.writeObject(reply);
+
+
+                }
+
+                if((parcelRead.getCommand() == Command.SELECT) && (parcelRead.getTable() == Table.ONLOAN))
+                {
+
+                    List<On_loan> reply;
+
+                    reply = onLoan;
+
+                    objectOutputStream.writeObject(reply);
+
+
+                }
+
+
+
+
             }
         } catch (SocketException | EOFException ex) {
             System.out.println("Server: We have lost connection to client " + connectionCount + ".");
