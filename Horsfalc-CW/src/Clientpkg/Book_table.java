@@ -11,12 +11,11 @@ public class Book_table extends AbstractTableModel {
 
     private final String[] columnNames = {"book_id", "title", "authors", "average_ratings", "isbn", "isbn13", "language_code", "num_pages", "ratings_count", "text_review_count", "quantity" };
 
-    private final ArrayList<Object[]> bookdata = new ArrayList<>();
+    private final ArrayList<Object[]> bookData = new ArrayList<>();
 
 
 
     public Book_table() {
-
 
     }
 
@@ -40,7 +39,7 @@ public class Book_table extends AbstractTableModel {
 
             Object[] table_data = {book_id, title, author, average_rating, isbn, isbn13, language_code, num_pages, ratings_count,text_review_count,quantity};
 
-            bookdata.add(table_data);
+            bookData.add(table_data);
 
 
         }
@@ -51,7 +50,7 @@ public class Book_table extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return bookdata.size();
+        return bookData.size();
     }
 
     @Override
@@ -61,7 +60,7 @@ public class Book_table extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return bookdata.get(rowIndex)[columnIndex];
+        return bookData.get(rowIndex)[columnIndex];
     }
 
     @Override
@@ -76,7 +75,7 @@ public class Book_table extends AbstractTableModel {
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        bookdata.get(rowIndex)[columnIndex] = aValue.toString();
+        bookData.get(rowIndex)[columnIndex] = aValue.toString();
     }
 
     @Override
@@ -85,13 +84,4 @@ public class Book_table extends AbstractTableModel {
     }
 
 
-    public void removerow(int rowIndex)
-    {
-
-
-
-        bookdata.remove(rowIndex);
-
-
-    }
 }
