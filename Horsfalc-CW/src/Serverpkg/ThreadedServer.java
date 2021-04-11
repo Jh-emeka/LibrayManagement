@@ -101,9 +101,8 @@ public class ThreadedServer {
         return onLoan;
     }
 
-
-  public synchronized static void insertBook(Book newBook)
-  {
+    public synchronized static void insertBook(Book newBook)
+   {
       String insertSQL = "INSERT INTO books (title, authors, average_rating, isbn, isbn13, language_code, `#num_pages`, ratings_count, text_reviews_count, quantity) "
 
                           + "VALUES (?,?,?,?,?,?,?,?,?,?)";
@@ -130,7 +129,36 @@ public class ThreadedServer {
 
 
 
-  }
+   }
+
+   public synchronized static void insertPerson(Person newPerson){
+
+        String insertSQL = "INSERT INTO person (first_name, last_name, library_card) " + "VALUES (?,?,?)";
+
+
+       try (Connection conn = ConnectionFactory.getConnection(); // auto close the connection object after try
+            PreparedStatement prep = conn.prepareStatement(insertSQL)) {
+
+          prep.setString(1,newPerson.getFirst_name());
+          prep.setString(2, newPerson.getLast_name());
+          prep.setDouble(3,newPerson.getLibraryCard());
+
+          prep.execute();
+
+       } catch (SQLException ex) {
+           Logger.getLogger(ThreadedServer.class.getName()).log(Level.SEVERE, null, ex);
+       }
+
+
+   }
+
+
+
+
+
+
+
+
 
     /**
      * Wait until a client connects to the server on a port, then establish the
