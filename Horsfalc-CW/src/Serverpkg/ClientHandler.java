@@ -112,6 +112,17 @@ public class ClientHandler implements Runnable {
 
                 }
 
+                if((parcelRead.getCommand() == Command.ADD) && (parcelRead.getTable() == Table.ONLOAN)){
+
+
+                    ThreadedServer.insertLoan((On_loan) parcelRead.getNewData());
+                    ack = new Parcel(Command.SUCCESS);
+
+                    objectOutputStream.writeObject(ack);
+
+
+                }
+
 
 
 
