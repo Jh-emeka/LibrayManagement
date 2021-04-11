@@ -576,6 +576,14 @@ public class Client {
              }
          });
 
+         add_person.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+
+                 addPerson();
+             }
+         });
+
     }
 
 
@@ -778,6 +786,67 @@ public class Client {
 
 
     }
+
+    private void addPerson()
+    {
+        if (objectOutputStream != null && objectInputStream != null){
+
+            Person newPerson = new Person();
+
+            newPerson.setFirst_name(textFieldFirstName.getText());
+            newPerson.setLast_name(textFieldLastName.getText());
+            newPerson.setLibrary_card(Double.parseDouble(textFieldLibraryCard.getText()));
+
+            try {
+
+                objectOutputStream.writeObject(new Parcel(Command.ADD, Table.PERSON,newPerson));
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            }
+
+            // 3. receive reply from server
+
+            Parcel reply = null;
+
+            System.out.println("Status: waiting for reply from server");
+            try {
+                reply = (Parcel) objectInputStream.readObject();
+
+
+                System.out.println("Status: received reply from server");
+
+
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            } catch (ClassNotFoundException ex) {
+                System.out.println("ClassNotFoundException " + ex);
+            }
+
+            // 4. display message on textarea
+            if (reply != null) {
+
+                try {
+
+                    System.out.println(reply.getCommand());
+
+
+
+
+                } catch (NullPointerException ex) {
+
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else {
+            System.out.println("You must connect to the server first!!");
+        }
+
+
+
+    }
+
+
+
 
 
     private void getOnLoanTable()
