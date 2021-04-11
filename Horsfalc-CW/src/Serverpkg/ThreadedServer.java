@@ -11,8 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -104,6 +102,36 @@ public class ThreadedServer {
     }
 
 
+  public synchronized static void insertBook(Book newBook)
+  {
+      String insertSQL = "INSERT INTO books (title, authors, average_rating, isbn, isbn13, language_code, `#num_pages`, ratings_count, text_reviews_count, quantity) "
+
+                          + "VALUES (?,?,?,?,?,?,?,?,?,?)";
+
+      try (Connection conn = ConnectionFactory.getConnection(); // auto close the connection object after try
+           PreparedStatement prep = conn.prepareStatement(insertSQL)) {
+
+        prep.setString(1, newBook.getTitle());
+        prep.setString(2, newBook.getAuthors());
+        prep.setFloat(3, newBook.getAverage_rating());
+        prep.setDouble(4, newBook.getIsbn());
+        prep.setDouble(5, newBook.getIsbn13());
+        prep.setString(6, newBook.getLanguage_code());
+        prep.setInt(7, newBook.getNum_pages());
+        prep.setInt(8, newBook.getRating_count());
+        prep.setInt(9, newBook.getText_review_count());
+        prep.setInt(10, newBook.getQuantity());
+
+        prep.execute();
+
+      } catch (SQLException ex) {
+          Logger.getLogger(ThreadedServer.class.getName()).log(Level.SEVERE, null, ex);
+      }
+
+
+
+  }
+
     /**
      * Wait until a client connects to the server on a port, then establish the
      * connection via a socket object and create a thread to handle requests.
@@ -138,7 +166,6 @@ public class ThreadedServer {
 
 
     public static void main(String[] args) {
-        Serverpkg.ThreadedServer app = new Serverpkg.ThreadedServer();
 
         ThreadedServer simpleServer = new ThreadedServer();
         simpleServer.connectToClients();
