@@ -54,6 +54,7 @@ public class ClientHandler implements Runnable {
                 System.out.println("Server: Read data from client: " + parcelRead + ".");
 
 
+                 Parcel ack = null ; // Acknowledge to indicate success or fail
 
                 if ((parcelRead.getCommand() == Command.SELECT) && (parcelRead.getTable() == Table.BOOK)) {
 
@@ -86,6 +87,17 @@ public class ClientHandler implements Runnable {
 
                     objectOutputStream.writeObject(reply);
 
+
+                }
+
+                if((parcelRead.getCommand() == Command.ADD) && (parcelRead.getTable() == Table.BOOK))
+                {
+
+                  ThreadedServer.insertBook((Book) parcelRead.getNewData());
+
+                  ack = new Parcel(Command.SUCCESS);
+
+                   objectOutputStream.writeObject(ack);
 
                 }
 
