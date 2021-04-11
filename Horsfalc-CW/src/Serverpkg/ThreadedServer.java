@@ -152,6 +152,34 @@ public class ThreadedServer {
 
    }
 
+   public synchronized static void insertLoan(On_loan newLoan){
+
+        String insertSQL = "INSERT INTO on_loan (book_id, person_id, loan_period, loan_start, loan_end, returned_date, return_status )"
+
+                + "VALUES (?,?,?,?,?,?,?)";
+
+
+
+
+       try (Connection conn = ConnectionFactory.getConnection(); // auto close the connection object after try
+            PreparedStatement prep = conn.prepareStatement(insertSQL)) {
+
+          prep.setInt(1,newLoan.getBook_Id());
+          prep.setInt(2,newLoan.getPerson_Id());
+          prep.setInt(3,newLoan.getLoan_Period());
+          prep.setString(4,newLoan.getLoan_Start());
+          prep.setString(5,newLoan.getLoan_End());
+          prep.setString(6, newLoan.getReturned_Date());
+          prep.setString(7, newLoan.getReturn_Status());
+
+          prep.execute();
+
+
+       } catch (SQLException ex) {
+           Logger.getLogger(ThreadedServer.class.getName()).log(Level.SEVERE, null, ex);
+       }
+   }
+
 
 
 
