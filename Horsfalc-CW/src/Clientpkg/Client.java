@@ -567,6 +567,14 @@ public class Client {
              }
          });
 
+         add_book.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+
+                 addBook();
+
+             }
+         });
 
     }
 
@@ -643,8 +651,69 @@ public class Client {
 
     }
 
+
     private void addBook()
     {
+
+        if (objectOutputStream != null && objectInputStream != null) {
+
+            Book newBook = new Book();
+            newBook.setTitle(textFieldTitle.getText());
+            newBook.setAuthors(textFieldAuthors.getText());
+            newBook.setAverage_rating(Float.parseFloat(textFieldAverageRatings.getText()));
+            newBook.setIsbn(Double.parseDouble(textFieldIsbn.getText()));
+            newBook.setIsbn13(Double.parseDouble(textFieldIsbn13.getText()));
+            newBook.setLanguage_code(textFieldLanguageCode.getText());
+            newBook.setNum_pages(Integer.parseInt(textFieldNumPages.getText()));
+            newBook.setRating_count(Integer.parseInt(textFieldRatingsCount.getText()));
+            newBook.setText_review_count(Integer.parseInt(textFieldTextReviewCount.getText()));
+            newBook.setQuantity(Integer.parseInt(textFieldQuantity.getText()));
+
+
+            try {
+
+                objectOutputStream.writeObject(new Parcel(Command.ADD, Table.BOOK,newBook));
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            }
+
+            // 3. receive reply from server
+
+            Parcel reply = null;
+
+            System.out.println("Status: waiting for reply from server");
+            try {
+                reply = (Parcel) objectInputStream.readObject();
+
+
+                System.out.println("Status: received reply from server");
+
+
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            } catch (ClassNotFoundException ex) {
+                System.out.println("ClassNotFoundException " + ex);
+            }
+
+            // 4. display message on textarea
+            if (reply != null) {
+
+                try {
+
+                      System.out.println(reply.getCommand());
+
+
+
+
+                } catch (NullPointerException ex) {
+
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else {
+            System.out.println("You must connect to the server first!!");
+        }
+
 
 
 
