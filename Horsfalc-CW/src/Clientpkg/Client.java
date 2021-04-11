@@ -14,7 +14,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -70,6 +73,14 @@ public class Client {
     public Client() {
 
         initGUI();
+
+    }
+
+    public void dateFormatter(JTextField input)
+    {
+        Date d = new Date();
+        SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
+        input.setText(formatDate.format(d));
 
     }
 
@@ -288,15 +299,18 @@ public class Client {
         JLabel loanStart = new JLabel("Loan Start:");
         loanStart.setBounds(1120,140, 200,20);
         textFieldLoanStart = new JTextField();
+        dateFormatter(textFieldLoanStart);
         textFieldLoanStart.setBounds(1235,140, 200,20);
         tab3.add(loanStart);
         tab3.add(textFieldLoanStart);
 
-
         JLabel loanEnd = new JLabel("Loan End:");
         loanEnd.setBounds(1120,170, 200,20);
+        Date end  = new Date();
+
         textFieldLoanEnd = new JTextField();
         textFieldLoanEnd.setBounds(1235,170, 200,20);
+        //dateFormatter(textFieldLoanEnd);
         tab3.add(loanEnd);
         tab3.add(textFieldLoanEnd);
 
@@ -304,6 +318,7 @@ public class Client {
         returnedDate.setBounds(1120,200, 200,20);
         textFieldReturnedDate = new JTextField();
         textFieldReturnedDate.setBounds(1235,200, 200,20);
+       // dateFormatter(textFieldReturnedDate);
         tab3.add(returnedDate);
         tab3.add(textFieldReturnedDate);
 
@@ -584,7 +599,18 @@ public class Client {
              }
          });
 
+         add_loan.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+
+                 addLoan();
+
+             }
+         });
+
     }
+
+
 
 
     private void closeConnection() {
@@ -906,6 +932,81 @@ public class Client {
 
 
     }
+
+    private void addLoan(){
+
+        if (objectOutputStream != null && objectInputStream != null){
+
+            On_loan newLoan = new On_loan();
+
+
+            newLoan.setBook_Id(Integer.parseInt(textFieldBookId2.getText()));
+            newLoan.setPerson_Id(Integer.parseInt(textFieldPersonId2.getText()));
+            newLoan.setLoan_Period(Integer.parseInt(textFieldLoanPeriod.getText()));
+            newLoan.setLoan_Start(textFieldLoanStart.getText());
+            newLoan.setLoan_End(textFieldLoanEnd.getText());
+            newLoan.setReturned_Date(textFieldReturnedDate.getText());
+            newLoan.setReturn_Status(textFieldReturnStatus.getText());
+
+
+            try {
+
+                objectOutputStream.writeObject(new Parcel(Command.ADD, Table.ONLOAN,newLoan));
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            }
+
+            // 3. receive reply from server
+
+            Parcel reply = null;
+
+            System.out.println("Status: waiting for reply from server");
+            try {
+                reply = (Parcel) objectInputStream.readObject();
+
+
+                System.out.println("Status: received reply from server");
+
+
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            } catch (ClassNotFoundException ex) {
+                System.out.println("ClassNotFoundException " + ex);
+            }
+
+            // 4. display message on textarea
+            if (reply != null) {
+
+                try {
+
+                    System.out.println(reply.getCommand());
+
+                    reconnectToServer();
+
+
+                } catch (NullPointerException ex) {
+
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else {
+            System.out.println("You must connect to the server first!!");
+        }
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
 
 
 
