@@ -68,6 +68,7 @@ public class Client {
     private JTextField textFieldLoanEnd;
     private JTextField textFieldReturnedDate;
     private JTextField textFieldReturnStatus;
+    private JComboBox<String> status;
 
 
     public Client() {
@@ -322,12 +323,18 @@ public class Client {
         tab3.add(returnedDate);
         tab3.add(textFieldReturnedDate);
 
+
+        String[] options ={"On loan","Returned","Overdue"};
+        status = new JComboBox<>(options);
+        status.setEditable(true);
+        status.setBounds(1235, 230,200,20);
+
         JLabel returnStatus = new JLabel("Return Status:");
         returnStatus.setBounds(1120,230, 200,20);
         textFieldReturnStatus = new JTextField();
         textFieldReturnStatus.setBounds(1235,230, 200,20);
         tab3.add(returnStatus);
-        tab3.add(textFieldReturnStatus);
+        tab3.add(status);
 
 
 
@@ -547,7 +554,7 @@ public class Client {
 
                  textFieldReturnedDate.setText(String.valueOf(onLoanTable.getModel().getValueAt(row, 6)));
 
-                 textFieldReturnStatus.setText(String.valueOf(onLoanTable.getModel().getValueAt(row, 7)));
+                 status.getEditor().setItem(String.valueOf(onLoanTable.getModel().getValueAt(row, 7)));
 
              }
 
@@ -946,7 +953,7 @@ public class Client {
             newLoan.setLoan_Start(textFieldLoanStart.getText());
             newLoan.setLoan_End(textFieldLoanEnd.getText());
             newLoan.setReturned_Date(textFieldReturnedDate.getText());
-            newLoan.setReturn_Status(textFieldReturnStatus.getText());
+            newLoan.setReturn_Status(status.getEditor().getItem().toString());
 
 
             try {
@@ -998,17 +1005,6 @@ public class Client {
 
 
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
