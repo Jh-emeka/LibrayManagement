@@ -626,6 +626,14 @@ public class Client {
             }
         });
 
+        update_loan.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                updateLoan();
+
+            }
+        });
 
     }
 
@@ -964,6 +972,7 @@ public class Client {
     {
 
         On_loan newLoan = new On_loan();
+        newLoan.setLoan_Id(Integer.parseInt(textFieldLoanId.getText()));
         newLoan.setBook_Id(Integer.parseInt(textFieldBookId2.getText()));
         newLoan.setPerson_Id(Integer.parseInt(textFieldPersonId2.getText()));
         newLoan.setLoan_Period(Integer.parseInt(textFieldLoanPeriod.getText()));
@@ -993,6 +1002,27 @@ public class Client {
         } else {
             System.out.println("You must connect to the server first!!");
         }
+
+    }
+
+    private void updateLoan(){
+
+        if (objectOutputStream != null && objectInputStream != null){
+
+            try {
+                objectOutputStream.writeObject(new Parcel(Command.UPDATE, Table.ONLOAN,fillLoanObject()));
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            }
+
+            // 3. receive reply from server
+            receiveReply();
+        } else {
+            System.out.println("You must connect to the server first!!");
+        }
+
+
+
 
     }
 
