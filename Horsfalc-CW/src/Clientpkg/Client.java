@@ -345,9 +345,9 @@ public class Client {
         tab3.add(add_loan);
 
 
-        JButton update = new JButton("Update");
-        update.setBounds(1290, 400, 100, 20);
-        tab1.add(update);
+        JButton update_Book = new JButton("Update");
+        update_Book.setBounds(1290, 400, 100, 20);
+        tab1.add(update_Book);
 
         JButton update_Person = new JButton("Update");
         update_Person.setBounds(1290, 150, 100, 20);
@@ -609,6 +609,18 @@ public class Client {
              }
          });
 
+         update_Book.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+
+                 updateBook();
+
+             }
+         });
+
+
+
+
     }
 
 
@@ -628,9 +640,42 @@ public class Client {
     }
 
 
+    private void receiveReply(){
+
+        Parcel reply = null;
+
+        System.out.println("Status: waiting for reply from server");
+        try {
+            reply = (Parcel) objectInputStream.readObject();
+
+
+            System.out.println("Status: received reply from server");
+
+
+        } catch (IOException ex) {
+            System.out.println("IOException " + ex);
+        } catch (ClassNotFoundException ex) {
+            System.out.println("ClassNotFoundException " + ex);
+        }
+
+
+        if (reply != null) {
+
+            try {
+
+                System.out.println(reply.getCommand());
+
+            } catch (NullPointerException ex) {
+
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+
+
     private void getBookTable(){
         if (objectOutputStream != null && objectInputStream != null) {
-
 
 
             Book newBook = new Book();
@@ -690,6 +735,7 @@ public class Client {
     {
 
         Book newBook = new Book();
+        newBook.setBookId(Integer.parseInt(textFieldBookId.getText()));
         newBook.setTitle(textFieldTitle.getText());
         newBook.setAuthors(textFieldAuthors.getText());
         newBook.setAverage_rating(Float.parseFloat(textFieldAverageRatings.getText()));
@@ -708,10 +754,7 @@ public class Client {
 
     private void addBook()
     {
-
         if (objectOutputStream != null && objectInputStream != null) {
-
-
             try {
 
                 objectOutputStream.writeObject(new Parcel(Command.ADD, Table.BOOK,fillBookObject()));
@@ -719,53 +762,31 @@ public class Client {
                 System.out.println("IOException " + ex);
             }
 
-            // 3. receive reply from server
+            //receive reply from server
+            receiveReply();
 
-            Parcel reply = null;
-
-            System.out.println("Status: waiting for reply from server");
-            try {
-                reply = (Parcel) objectInputStream.readObject();
-
-
-                System.out.println("Status: received reply from server");
-
-
-            } catch (IOException ex) {
-                System.out.println("IOException " + ex);
-            } catch (ClassNotFoundException ex) {
-                System.out.println("ClassNotFoundException " + ex);
-            }
-
-            // 4. display message on textarea
-            if (reply != null) {
-
-                try {
-
-                      System.out.println(reply.getCommand());
-
-
-
-
-                } catch (NullPointerException ex) {
-
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
         } else {
             System.out.println("You must connect to the server first!!");
         }
-
-
-
 
     }
 
     private void updateBook()
     {
+        if (objectOutputStream != null && objectInputStream != null) {
+            try {
 
+                objectOutputStream.writeObject(new Parcel(Command.UPDATE, Table.BOOK,fillBookObject()));
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            }
 
+            //receive reply from server
+            receiveReply();
 
+        } else {
+            System.out.println("You must connect to the server first!!");
+        }
 
     }
 
@@ -827,16 +848,15 @@ public class Client {
 
     private Object fillPersonObject()
     {
-
         Person newPerson = new Person();
-
         newPerson.setFirst_name(textFieldFirstName.getText());
         newPerson.setLast_name(textFieldLastName.getText());
         newPerson.setLibrary_card(Double.parseDouble(textFieldLibraryCard.getText()));
 
         return newPerson;
-
     }
+
+
 
     private void addPerson()
     {
@@ -849,42 +869,11 @@ public class Client {
                 System.out.println("IOException " + ex);
             }
 
+            receiveReply();
 
-
-            Parcel reply = null;
-
-            System.out.println("Status: waiting for reply from server");
-            try {
-                reply = (Parcel) objectInputStream.readObject();
-
-
-                System.out.println("Status: received reply from server");
-
-
-            } catch (IOException ex) {
-                System.out.println("IOException " + ex);
-            } catch (ClassNotFoundException ex) {
-                System.out.println("ClassNotFoundException " + ex);
-            }
-
-
-            if (reply != null) {
-
-                try {
-
-                    System.out.println(reply.getCommand());
-
-
-                } catch (NullPointerException ex) {
-
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
         } else {
             System.out.println("You must connect to the server first!!");
         }
-
-
 
     }
 
@@ -896,21 +885,14 @@ public class Client {
     {
         if (objectOutputStream != null && objectInputStream != null) {
 
-            // 1. read data from textfield
-
             On_loan newLoan = new On_loan();
 
-            // 2. send data to server
-
-            // Parcel envelope = null;
             try {
 
                 objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.ONLOAN,newLoan));
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             }
-
-            // 3. receive reply from server
 
             ArrayList<On_loan> reply = new ArrayList<>();
 
@@ -927,12 +909,10 @@ public class Client {
                 System.out.println("ClassNotFoundException " + ex);
             }
 
-            // 4. display message on textarea
+
             if (reply != null) {
 
                 try {
-                    // reply.forEach((track)-> System.out.println(track));
-
 
                     onLoanTableModel.readData(reply);
                     tab3.add(scrollPane3);
@@ -973,45 +953,14 @@ public class Client {
 
         if (objectOutputStream != null && objectInputStream != null){
 
-
             try {
-
                 objectOutputStream.writeObject(new Parcel(Command.ADD, Table.ONLOAN,fillLoanObject()));
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             }
 
             // 3. receive reply from server
-
-            Parcel reply = null;
-
-            System.out.println("Status: waiting for reply from server");
-            try {
-                reply = (Parcel) objectInputStream.readObject();
-
-
-                System.out.println("Status: received reply from server");
-
-            } catch (IOException ex) {
-                System.out.println("IOException " + ex);
-            } catch (ClassNotFoundException ex) {
-                System.out.println("ClassNotFoundException " + ex);
-            }
-
-            if (reply != null) {
-
-                try {
-
-                    System.out.println(reply.getCommand());
-
-                    reconnectToServer();
-
-
-                } catch (NullPointerException ex) {
-
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+           receiveReply();
         } else {
             System.out.println("You must connect to the server first!!");
         }
