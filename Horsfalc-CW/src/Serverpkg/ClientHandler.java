@@ -132,7 +132,17 @@ public class ClientHandler implements Runnable {
 
                 }
 
+                if((parcelRead.getCommand() == Command.UPDATE) && (parcelRead.getTable() == Table.PERSON)){
 
+                    ThreadedServer.personUpdate((Person) parcelRead.getNewData());
+
+                    ack = new Parcel(Command.SUCCESS);
+
+                    objectOutputStream.writeObject(ack);
+
+
+
+                }
 
             }
         } catch (SocketException | EOFException ex) {
