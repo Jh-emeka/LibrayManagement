@@ -242,6 +242,35 @@ public class ThreadedServer {
 
 
 
+   public synchronized static void loanUpdate( On_loan updateLoan){
+
+
+        String insertSQL = " UPDATE on_loan SET book_id = ?, person_id = ?, loan_period = ?, loan_start = ?, loan_end = ?, returned_date = ?, return_status = ?"
+                + " WHERE loan_id = ?";
+
+
+       try (Connection conn = ConnectionFactory.getConnection(); // auto close the connection object after try
+            PreparedStatement prep = conn.prepareStatement(insertSQL)) {
+
+
+           prep.setInt(1, updateLoan.getBook_Id());
+           prep.setInt(2, updateLoan.getPerson_Id());
+           prep.setInt(3, updateLoan.getLoan_Period());
+           prep.setString(4, updateLoan.getLoan_Start());
+           prep.setString(5, updateLoan.getLoan_End());
+           prep.setString(6, updateLoan.getReturned_Date());
+           prep.setString(7, updateLoan.getReturn_Status());
+           prep.setInt(8, updateLoan.getLoan_Id());
+
+           prep.execute();
+
+       } catch (SQLException ex) {
+           Logger.getLogger(ThreadedServer.class.getName()).log(Level.SEVERE, null, ex);
+       }
+
+   }
+
+
 
     /**
      * Wait until a client connects to the server on a port, then establish the
@@ -270,9 +299,6 @@ public class ThreadedServer {
             System.out.println("Server: Closed down");
         }
     }
-
-
-
 
 
 
