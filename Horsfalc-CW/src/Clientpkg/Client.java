@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,7 +66,6 @@ public class Client {
     private JTextField textFieldLoanStart;
     private JTextField textFieldLoanEnd;
     private JTextField textFieldReturnedDate;
-    private JTextField textFieldReturnStatus;
     private JComboBox<String> status;
 
 
@@ -90,7 +88,7 @@ public class Client {
         final JFrame f = new JFrame("Library Management System"); // final means fr cannot point to a another Jframe.
 
 
-        JButton connect = new JButton("Login");
+        JButton connect = new JButton("Refresh");
         connect.setBounds(4, 50, 200, 50);
 
         JButton print = new JButton("Print");
@@ -307,11 +305,10 @@ public class Client {
 
         JLabel loanEnd = new JLabel("Loan End:");
         loanEnd.setBounds(1120,170, 200,20);
-        Date end  = new Date();
+
 
         textFieldLoanEnd = new JTextField();
         textFieldLoanEnd.setBounds(1235,170, 200,20);
-        //dateFormatter(textFieldLoanEnd);
         tab3.add(loanEnd);
         tab3.add(textFieldLoanEnd);
 
@@ -319,7 +316,6 @@ public class Client {
         returnedDate.setBounds(1120,200, 200,20);
         textFieldReturnedDate = new JTextField();
         textFieldReturnedDate.setBounds(1235,200, 200,20);
-       // dateFormatter(textFieldReturnedDate);
         tab3.add(returnedDate);
         tab3.add(textFieldReturnedDate);
 
@@ -331,8 +327,6 @@ public class Client {
 
         JLabel returnStatus = new JLabel("Return Status:");
         returnStatus.setBounds(1120,230, 200,20);
-        textFieldReturnStatus = new JTextField();
-        textFieldReturnStatus.setBounds(1235,230, 200,20);
         tab3.add(returnStatus);
         tab3.add(status);
 
@@ -637,16 +631,15 @@ public class Client {
     private void getBookTable(){
         if (objectOutputStream != null && objectInputStream != null) {
 
-            // 1. read data from textfield
 
-            String getTables = "get tables";
 
-            // 2. send data to server
+            Book newBook = new Book();
 
-            // Parcel envelope = null;
+            // send data to server
+
             try {
 
-                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.BOOK,getTables));
+                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.BOOK,newBook));
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             }
@@ -693,27 +686,35 @@ public class Client {
     }
 
 
+    private Object fillBookObject()
+    {
+
+        Book newBook = new Book();
+        newBook.setTitle(textFieldTitle.getText());
+        newBook.setAuthors(textFieldAuthors.getText());
+        newBook.setAverage_rating(Float.parseFloat(textFieldAverageRatings.getText()));
+        newBook.setIsbn(Double.parseDouble(textFieldIsbn.getText()));
+        newBook.setIsbn13(Double.parseDouble(textFieldIsbn13.getText()));
+        newBook.setLanguage_code(textFieldLanguageCode.getText());
+        newBook.setNum_pages(Integer.parseInt(textFieldNumPages.getText()));
+        newBook.setRating_count(Integer.parseInt(textFieldRatingsCount.getText()));
+        newBook.setText_review_count(Integer.parseInt(textFieldTextReviewCount.getText()));
+        newBook.setQuantity(Integer.parseInt(textFieldQuantity.getText()));
+
+        return newBook;
+
+    }
+
+
     private void addBook()
     {
 
         if (objectOutputStream != null && objectInputStream != null) {
 
-            Book newBook = new Book();
-            newBook.setTitle(textFieldTitle.getText());
-            newBook.setAuthors(textFieldAuthors.getText());
-            newBook.setAverage_rating(Float.parseFloat(textFieldAverageRatings.getText()));
-            newBook.setIsbn(Double.parseDouble(textFieldIsbn.getText()));
-            newBook.setIsbn13(Double.parseDouble(textFieldIsbn13.getText()));
-            newBook.setLanguage_code(textFieldLanguageCode.getText());
-            newBook.setNum_pages(Integer.parseInt(textFieldNumPages.getText()));
-            newBook.setRating_count(Integer.parseInt(textFieldRatingsCount.getText()));
-            newBook.setText_review_count(Integer.parseInt(textFieldTextReviewCount.getText()));
-            newBook.setQuantity(Integer.parseInt(textFieldQuantity.getText()));
-
 
             try {
 
-                objectOutputStream.writeObject(new Parcel(Command.ADD, Table.BOOK,newBook));
+                objectOutputStream.writeObject(new Parcel(Command.ADD, Table.BOOK,fillBookObject()));
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             }
@@ -760,27 +761,31 @@ public class Client {
 
     }
 
+    private void updateBook()
+    {
+
+
+
+
+    }
+
 
 
     private void getPersonTable()
     {
         if (objectOutputStream != null && objectInputStream != null) {
 
-            // 1. read data from textfield
 
-            String getTables = "get tables";
+            Person newPerson = new Person();
 
-            // 2. send data to server
-
-            // Parcel envelope = null;
             try {
 
-                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.PERSON,getTables));
+                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.PERSON,newPerson));
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             }
 
-            // 3. receive reply from server
+
 
             ArrayList<Person> reply = new ArrayList<>();
 
@@ -797,7 +802,7 @@ public class Client {
                 System.out.println("ClassNotFoundException " + ex);
             }
 
-            // 4. display message on textarea
+
             if (reply != null) {
 
                 try {
@@ -820,24 +825,31 @@ public class Client {
 
     }
 
+    private Object fillPersonObject()
+    {
+
+        Person newPerson = new Person();
+
+        newPerson.setFirst_name(textFieldFirstName.getText());
+        newPerson.setLast_name(textFieldLastName.getText());
+        newPerson.setLibrary_card(Double.parseDouble(textFieldLibraryCard.getText()));
+
+        return newPerson;
+
+    }
+
     private void addPerson()
     {
         if (objectOutputStream != null && objectInputStream != null){
 
-            Person newPerson = new Person();
-
-            newPerson.setFirst_name(textFieldFirstName.getText());
-            newPerson.setLast_name(textFieldLastName.getText());
-            newPerson.setLibrary_card(Double.parseDouble(textFieldLibraryCard.getText()));
-
             try {
 
-                objectOutputStream.writeObject(new Parcel(Command.ADD, Table.PERSON,newPerson));
+                objectOutputStream.writeObject(new Parcel(Command.ADD, Table.PERSON,fillPersonObject()));
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             }
 
-            // 3. receive reply from server
+
 
             Parcel reply = null;
 
@@ -855,14 +867,12 @@ public class Client {
                 System.out.println("ClassNotFoundException " + ex);
             }
 
-            // 4. display message on textarea
+
             if (reply != null) {
 
                 try {
 
                     System.out.println(reply.getCommand());
-
-
 
 
                 } catch (NullPointerException ex) {
@@ -888,14 +898,14 @@ public class Client {
 
             // 1. read data from textfield
 
-            String getTables = "get tables";
+            On_loan newLoan = new On_loan();
 
             // 2. send data to server
 
             // Parcel envelope = null;
             try {
 
-                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.ONLOAN,getTables));
+                objectOutputStream.writeObject(new Parcel(Command.SELECT, Table.ONLOAN,newLoan));
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             }
@@ -940,25 +950,33 @@ public class Client {
 
     }
 
+
+    private Object fillLoanObject()
+    {
+
+        On_loan newLoan = new On_loan();
+        newLoan.setBook_Id(Integer.parseInt(textFieldBookId2.getText()));
+        newLoan.setPerson_Id(Integer.parseInt(textFieldPersonId2.getText()));
+        newLoan.setLoan_Period(Integer.parseInt(textFieldLoanPeriod.getText()));
+        newLoan.setLoan_Start(textFieldLoanStart.getText());
+        newLoan.setLoan_End(textFieldLoanEnd.getText());
+        newLoan.setReturned_Date(textFieldReturnedDate.getText());
+        newLoan.setReturn_Status(status.getEditor().getItem().toString());
+
+        return newLoan;
+
+    }
+
+
+
     private void addLoan(){
 
         if (objectOutputStream != null && objectInputStream != null){
 
-            On_loan newLoan = new On_loan();
-
-
-            newLoan.setBook_Id(Integer.parseInt(textFieldBookId2.getText()));
-            newLoan.setPerson_Id(Integer.parseInt(textFieldPersonId2.getText()));
-            newLoan.setLoan_Period(Integer.parseInt(textFieldLoanPeriod.getText()));
-            newLoan.setLoan_Start(textFieldLoanStart.getText());
-            newLoan.setLoan_End(textFieldLoanEnd.getText());
-            newLoan.setReturned_Date(textFieldReturnedDate.getText());
-            newLoan.setReturn_Status(status.getEditor().getItem().toString());
-
 
             try {
 
-                objectOutputStream.writeObject(new Parcel(Command.ADD, Table.ONLOAN,newLoan));
+                objectOutputStream.writeObject(new Parcel(Command.ADD, Table.ONLOAN,fillLoanObject()));
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             }
@@ -974,14 +992,12 @@ public class Client {
 
                 System.out.println("Status: received reply from server");
 
-
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             } catch (ClassNotFoundException ex) {
                 System.out.println("ClassNotFoundException " + ex);
             }
 
-            // 4. display message on textarea
             if (reply != null) {
 
                 try {
@@ -1000,12 +1016,7 @@ public class Client {
             System.out.println("You must connect to the server first!!");
         }
 
-
-
-
-
     }
-
 
 
 
@@ -1014,7 +1025,7 @@ public class Client {
         closeConnection();
         System.out.println("Status: Attempting connection to server");
         try {
-            socket = new Socket("127.0.0.1", 3000);
+            socket = new Socket("127.0.0.1", 4000);
 
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
