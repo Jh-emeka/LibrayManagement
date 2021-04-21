@@ -217,6 +217,30 @@ public class ThreadedServer {
    }
 
 
+   public synchronized static void personUpdate(Person updatePerson){
+
+        String insertSQL = " UPDATE person SET first_name = ?, last_name = ?, library_card = ?" + " WHERE person_id = ?";
+
+       try (Connection conn = ConnectionFactory.getConnection(); // auto close the connection object after try
+            PreparedStatement prep = conn.prepareStatement(insertSQL)) {
+
+
+         prep.setString(1, updatePerson.getFirst_name());
+
+         prep.setString(2, updatePerson.getLast_name());
+
+         prep.setDouble(3, updatePerson.getLibraryCard());
+
+         prep.setInt(4, updatePerson.getPersonId());
+
+          prep.execute();
+
+       } catch (SQLException ex) {
+           Logger.getLogger(ThreadedServer.class.getName()).log(Level.SEVERE, null, ex);
+       }
+   }
+
+
 
 
     /**
