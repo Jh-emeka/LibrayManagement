@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * Demonstrates how to make a connection to the SQLite database and then just
  * outputs the data to the console.
  *
- * @author Chris Bass
+ * @author Horsfall Chukwuemeka
  */
 public class ThreadedServer {
 
@@ -182,8 +182,39 @@ public class ThreadedServer {
 
 
 
+   public synchronized static void bookUpdate(Book updateBook){
 
 
+        String insertSQL = "UPDATE books SET title = ?, authors = ?, average_rating = ?,isbn = ?, isbn13 = ?, language_code = ?, `#num_pages` = ?, ratings_count = ?, text_reviews_count = ?, quantity = ? "
+
+                + "WHERE book_id = ? "  ;
+
+
+        try (Connection conn = ConnectionFactory.getConnection(); // auto close the connection object after try
+            PreparedStatement prep = conn.prepareStatement(insertSQL)) {
+
+
+           prep.setString(1, updateBook.getTitle());
+           prep.setString(2, updateBook.getAuthors());
+           prep.setFloat(3,  updateBook.getAverage_rating());
+           prep.setDouble(4, updateBook.getIsbn());
+           prep.setDouble(5, updateBook.getIsbn13());
+           prep.setString(6, updateBook.getLanguage_code());
+           prep.setInt(7, updateBook.getNum_pages());
+           prep.setInt(8, updateBook.getRating_count());
+           prep.setInt(9, updateBook.getText_review_count());
+           prep.setInt(10,updateBook.getQuantity());
+            prep.setInt(11, updateBook.getBookId());
+
+           prep.execute();
+
+           System.out.println("updated");
+
+       } catch (SQLException ex) {
+           Logger.getLogger(ThreadedServer.class.getName()).log(Level.SEVERE, null, ex);
+       }
+
+   }
 
 
 
@@ -195,7 +226,7 @@ public class ThreadedServer {
     private void connectToClients() {
         System.out.println("Server: Server starting.");
 
-        try (ServerSocket serverSocket = new ServerSocket(3000)) {
+        try (ServerSocket serverSocket = new ServerSocket(4000)) {
 
             while (true) {
                 System.out.println("Server: Waiting for connecting client...");
@@ -215,6 +246,8 @@ public class ThreadedServer {
             System.out.println("Server: Closed down");
         }
     }
+
+
 
 
 
