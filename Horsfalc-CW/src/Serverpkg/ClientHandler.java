@@ -5,17 +5,16 @@ import both.*;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.Collections;
 import java.util.List;
 
 
 public class ClientHandler implements Runnable {
 
-    private Socket newSocket;
+    private final Socket newSocket;
 
 
     private static int connectionCount = 0;
-    private int connectionNumber;
+    private final int connectionNumber;
 
     public List<Book> books;
     public List<Person> person;
@@ -54,7 +53,7 @@ public class ClientHandler implements Runnable {
                 System.out.println("Server: Read data from client: " + parcelRead + ".");
 
 
-                 Parcel ack = null ; // Acknowledge to indicate success or fail
+                 Parcel ack; // Acknowledge to indicate success or fail
 
                 if ((parcelRead.getCommand() == Command.SELECT) && (parcelRead.getTable() == Table.BOOK)) {
 
@@ -123,6 +122,15 @@ public class ClientHandler implements Runnable {
 
                 }
 
+                if((parcelRead.getCommand() == Command.UPDATE) && (parcelRead.getTable() == Table.BOOK)){
+
+                    ThreadedServer.bookUpdate((Book) parcelRead.getNewData());
+
+                    ack = new Parcel(Command.SUCCESS);
+
+                    objectOutputStream.writeObject(ack);
+
+                }
 
 
 
