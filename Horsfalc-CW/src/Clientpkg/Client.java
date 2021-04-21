@@ -618,7 +618,13 @@ public class Client {
              }
          });
 
+        update_Person.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
+                updatePerson();
+            }
+        });
 
 
     }
@@ -846,9 +852,9 @@ public class Client {
 
     }
 
-    private Object fillPersonObject()
-    {
+    private Object fillPersonObject() {
         Person newPerson = new Person();
+        newPerson.setPersonId(Integer.parseInt(textFieldPersonId.getText()));
         newPerson.setFirst_name(textFieldFirstName.getText());
         newPerson.setLast_name(textFieldLastName.getText());
         newPerson.setLibrary_card(Double.parseDouble(textFieldLibraryCard.getText()));
@@ -874,6 +880,29 @@ public class Client {
         } else {
             System.out.println("You must connect to the server first!!");
         }
+
+    }
+
+    private void updatePerson()
+    {
+
+
+        if (objectOutputStream != null && objectInputStream != null){
+
+            try {
+
+                objectOutputStream.writeObject(new Parcel(Command.UPDATE, Table.PERSON,fillPersonObject()));
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            }
+
+               receiveReply();
+
+        } else {
+            System.out.println("You must connect to the server first!!");
+        }
+
+
 
     }
 
