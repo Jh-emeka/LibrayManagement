@@ -652,6 +652,15 @@ public class Client {
             }
         });
 
+        delete_loan.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                deleteLoan();
+
+            }
+        });
+
 
     }
 
@@ -1092,6 +1101,26 @@ public class Client {
         } else {
             System.out.println("You must connect to the server first!!");
         }
+
+    }
+
+    private void deleteLoan(){
+
+        if (objectOutputStream != null && objectInputStream != null){
+
+            try {
+                objectOutputStream.writeObject(new Parcel(Command.DELETE, Table.ONLOAN,fillLoanObject()));
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            }
+
+            // receive reply from server
+
+            receiveReply();
+        } else {
+            System.out.println("You must connect to the server first!!");
+        }
+
 
     }
 
