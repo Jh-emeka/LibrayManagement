@@ -305,6 +305,23 @@ public class ThreadedServer {
             Logger.getLogger(ThreadedServer.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    public synchronized static void deleteLoan(On_loan delete)
+    {
+
+        String deleteSQL = "DELETE FROM on_loan WHERE loan_id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection(); // auto close the connection object after try
+             PreparedStatement prep = conn.prepareStatement(deleteSQL)) {
+
+            prep.setInt(1,delete.getLoan_Id());
+
+            prep.execute();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ThreadedServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
