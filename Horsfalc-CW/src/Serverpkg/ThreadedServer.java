@@ -185,13 +185,13 @@ public class ThreadedServer {
    public synchronized static void bookUpdate(Book updateBook){
 
 
-        String insertSQL = "UPDATE books SET title = ?, authors = ?, average_rating = ?,isbn = ?, isbn13 = ?, language_code = ?, `#num_pages` = ?, ratings_count = ?, text_reviews_count = ?, quantity = ? "
+        String updateSQL = "UPDATE books SET title = ?, authors = ?, average_rating = ?,isbn = ?, isbn13 = ?, language_code = ?, `#num_pages` = ?, ratings_count = ?, text_reviews_count = ?, quantity = ? "
 
                 + "WHERE book_id = ? "  ;
 
 
         try (Connection conn = ConnectionFactory.getConnection(); // auto close the connection object after try
-            PreparedStatement prep = conn.prepareStatement(insertSQL)) {
+            PreparedStatement prep = conn.prepareStatement(updateSQL)) {
 
 
            prep.setString(1, updateBook.getTitle());
@@ -219,10 +219,10 @@ public class ThreadedServer {
 
    public synchronized static void personUpdate(Person updatePerson){
 
-        String insertSQL = " UPDATE person SET first_name = ?, last_name = ?, library_card = ?" + " WHERE person_id = ?";
+        String updateSQL = " UPDATE person SET first_name = ?, last_name = ?, library_card = ?" + " WHERE person_id = ?";
 
        try (Connection conn = ConnectionFactory.getConnection(); // auto close the connection object after try
-            PreparedStatement prep = conn.prepareStatement(insertSQL)) {
+            PreparedStatement prep = conn.prepareStatement(updateSQL)) {
 
 
          prep.setString(1, updatePerson.getFirst_name());
@@ -245,12 +245,12 @@ public class ThreadedServer {
    public synchronized static void loanUpdate( On_loan updateLoan){
 
 
-        String insertSQL = " UPDATE on_loan SET book_id = ?, person_id = ?, loan_period = ?, loan_start = ?, loan_end = ?, returned_date = ?, return_status = ?"
+        String updateSQL = " UPDATE on_loan SET book_id = ?, person_id = ?, loan_period = ?, loan_start = ?, loan_end = ?, returned_date = ?, return_status = ?"
                 + " WHERE loan_id = ?";
 
 
        try (Connection conn = ConnectionFactory.getConnection(); // auto close the connection object after try
-            PreparedStatement prep = conn.prepareStatement(insertSQL)) {
+            PreparedStatement prep = conn.prepareStatement(updateSQL)) {
 
 
            prep.setInt(1, updateLoan.getBook_Id());
@@ -267,6 +267,25 @@ public class ThreadedServer {
        } catch (SQLException ex) {
            Logger.getLogger(ThreadedServer.class.getName()).log(Level.SEVERE, null, ex);
        }
+
+   }
+
+   public synchronized static void deleteBook(Book delete)
+   {
+
+         String deleteSQL = "DELETE FROM books WHERE book_id = ?";
+
+       try (Connection conn = ConnectionFactory.getConnection(); // auto close the connection object after try
+            PreparedStatement prep = conn.prepareStatement(deleteSQL)) {
+
+         prep.setInt(1,delete.getBookId());
+
+         prep.execute();
+
+       } catch (SQLException ex) {
+           Logger.getLogger(ThreadedServer.class.getName()).log(Level.SEVERE, null, ex);
+       }
+
 
    }
 
