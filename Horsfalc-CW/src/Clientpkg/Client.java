@@ -644,6 +644,14 @@ public class Client {
             }
         });
 
+        delete_Person.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                deletePerson();
+            }
+        });
+
 
     }
 
@@ -943,6 +951,31 @@ public class Client {
             }
 
                receiveReply();
+
+        } else {
+            System.out.println("You must connect to the server first!!");
+        }
+
+
+
+    }
+
+    private void deletePerson()
+    {
+        Person personObj = new Person();
+        personObj.setPersonId(Integer.parseInt(textFieldPersonId.getText()));
+
+
+        if (objectOutputStream != null && objectInputStream != null){
+
+            try {
+
+                objectOutputStream.writeObject(new Parcel(Command.DELETE, Table.PERSON,fillPersonObject()));
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            }
+
+            receiveReply();
 
         } else {
             System.out.println("You must connect to the server first!!");
