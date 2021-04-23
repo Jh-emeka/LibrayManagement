@@ -359,9 +359,9 @@ public class Client {
 
 
 
-        JButton delete = new JButton("Delete");
-        delete.setBounds(1390,400,100,20);
-        tab1.add(delete);
+        JButton delete_Book = new JButton("Delete");
+        delete_Book.setBounds(1390,400,100,20);
+        tab1.add(delete_Book);
 
         JButton delete_Person = new JButton("Delete");
         delete_Person.setBounds(1390,150,100,20);
@@ -635,6 +635,16 @@ public class Client {
             }
         });
 
+        delete_Book.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                deleteBook();
+
+            }
+        });
+
+
     }
 
 
@@ -801,6 +811,34 @@ public class Client {
         } else {
             System.out.println("You must connect to the server first!!");
         }
+
+    }
+
+    private void deleteBook()
+    {
+
+        if (objectOutputStream != null && objectInputStream != null) {
+
+            Book newBook = new Book();
+
+            newBook.setBookId(Integer.parseInt(textFieldBookId.getText()));
+
+            try {
+
+                objectOutputStream.writeObject(new Parcel(Command.DELETE, Table.BOOK,newBook));
+
+            } catch (IOException ex) {
+                System.out.println("IOException " + ex);
+            }
+
+            //receive reply from server
+            receiveReply();
+
+        } else {
+            System.out.println("You must connect to the server first!!");
+        }
+
+
 
     }
 
@@ -997,7 +1035,7 @@ public class Client {
                 System.out.println("IOException " + ex);
             }
 
-            // 3. receive reply from server
+            // receive reply from server
            receiveReply();
         } else {
             System.out.println("You must connect to the server first!!");
@@ -1015,14 +1053,12 @@ public class Client {
                 System.out.println("IOException " + ex);
             }
 
-            // 3. receive reply from server
+            // receive reply from server
+
             receiveReply();
         } else {
             System.out.println("You must connect to the server first!!");
         }
-
-
-
 
     }
 
