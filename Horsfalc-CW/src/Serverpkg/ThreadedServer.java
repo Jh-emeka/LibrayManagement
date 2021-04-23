@@ -289,6 +289,25 @@ public class ThreadedServer {
 
    }
 
+    public synchronized static void deletePerson(Person delete)
+    {
+
+        String deleteSQL = "DELETE FROM person WHERE person_id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection(); // auto close the connection object after try
+             PreparedStatement prep = conn.prepareStatement(deleteSQL)) {
+
+            prep.setInt(1,delete.getPersonId());
+
+            prep.execute();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ThreadedServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+    }
+
 
 
     /**
