@@ -178,6 +178,18 @@ public class ClientHandler implements Runnable {
 
                 }
 
+                if((parcelRead.getCommand() == Command.DELETE) && (parcelRead.getTable() == Table.ONLOAN)){
+
+
+                    ThreadedServer.deleteLoan((On_loan) parcelRead.getNewData());
+
+                    ack = new Parcel(Command.SUCCESS);
+
+                    objectOutputStream.writeObject(ack);
+
+
+                }
+
             }
         } catch (SocketException | EOFException ex) {
             System.out.println("Server: We have lost connection to client " + connectionCount + ".");
