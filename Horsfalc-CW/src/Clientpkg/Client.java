@@ -3,12 +3,12 @@ package Clientpkg;
 import both.*;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputListener;
 
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -82,6 +82,69 @@ public class Client {
         input.setText(formatDate.format(d));
 
     }
+
+
+    // restricts user input to Digits for some textfields. better than writing keylistener for all textfields
+
+
+    private void allowDigit(JTextField textField){
+
+        textField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+                char userInput = e.getKeyChar();
+                if(!(Character.isDigit(userInput))){
+
+                    e.consume();
+
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+
+
+    }
+
+    // restricts user input to strings for some textfields
+
+    private void allowString(JTextField textField){
+
+        textField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+                char userInput = e.getKeyChar();
+                if(!(Character.isAlphabetic(userInput))){
+
+                    e.consume();
+
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+
+
+    }
+
 
     private void initGUI() {
 
@@ -395,9 +458,16 @@ public class Client {
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // this means that the gui can be closed by clicking the close icon
 
 
+
+
+
+
         connect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+
+
                 reconnectToServer();
                 getBookTable();
                 getPersonTable();
@@ -587,7 +657,7 @@ public class Client {
              @Override
              public void actionPerformed(ActionEvent e) {
 
-                 addBook();
+                 sendToServer(Command.ADD,Table.BOOK,fillBookObject(Command.ADD));
 
              }
          });
@@ -596,7 +666,8 @@ public class Client {
              @Override
              public void actionPerformed(ActionEvent e) {
 
-                 addPerson();
+                 sendToServer(Command.ADD,Table.PERSON,fillPersonObject(Command.ADD));
+
              }
          });
 
@@ -604,7 +675,7 @@ public class Client {
              @Override
              public void actionPerformed(ActionEvent e) {
 
-                 addLoan();
+                 sendToServer(Command.ADD,Table.ONLOAN,fillLoanObject(Command.ADD));
 
              }
          });
@@ -613,7 +684,7 @@ public class Client {
              @Override
              public void actionPerformed(ActionEvent e) {
 
-                 updateBook();
+                 sendToServer(Command.UPDATE,Table.BOOK,fillBookObject(Command.UPDATE));
 
              }
          });
@@ -622,7 +693,7 @@ public class Client {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                updatePerson();
+                sendToServer(Command.UPDATE,Table.PERSON,fillPersonObject(Command.UPDATE));
             }
         });
 
@@ -630,7 +701,7 @@ public class Client {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                updateLoan();
+                sendToServer(Command.UPDATE,Table.ONLOAN,fillLoanObject(Command.UPDATE));
 
             }
         });
@@ -639,7 +710,7 @@ public class Client {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                deleteBook();
+                sendToServer(Command.DELETE,Table.BOOK,fillBookObject(Command.DELETE));
 
             }
         });
@@ -648,7 +719,7 @@ public class Client {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                deletePerson();
+                sendToServer(Command.DELETE,Table.PERSON,fillPersonObject(Command.DELETE));
             }
         });
 
@@ -656,10 +727,15 @@ public class Client {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                deleteLoan();
+                sendToServer(Command.DELETE,Table.ONLOAN,fillLoanObject(Command.DELETE));
 
             }
         });
+
+
+
+
+
 
 
     }
@@ -681,37 +757,7 @@ public class Client {
     }
 
 
-    private void receiveReply(){
 
-        Parcel reply = null;
-
-        System.out.println("Status: waiting for reply from server");
-        try {
-            reply = (Parcel) objectInputStream.readObject();
-
-
-            System.out.println("Status: received reply from server");
-
-
-        } catch (IOException ex) {
-            System.out.println("IOException " + ex);
-        } catch (ClassNotFoundException ex) {
-            System.out.println("ClassNotFoundException " + ex);
-        }
-
-
-        if (reply != null) {
-
-            try {
-
-                System.out.println(reply.getCommand());
-
-            } catch (NullPointerException ex) {
-
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
 
 
 
@@ -771,96 +817,6 @@ public class Client {
 
     }
 
-
-    private Object fillBookObject()
-    {
-
-        Book newBook = new Book();
-        newBook.setBookId(Integer.parseInt(textFieldBookId.getText()));
-        newBook.setTitle(textFieldTitle.getText());
-        newBook.setAuthors(textFieldAuthors.getText());
-        newBook.setAverage_rating(Float.parseFloat(textFieldAverageRatings.getText()));
-        newBook.setIsbn(Double.parseDouble(textFieldIsbn.getText()));
-        newBook.setIsbn13(Double.parseDouble(textFieldIsbn13.getText()));
-        newBook.setLanguage_code(textFieldLanguageCode.getText());
-        newBook.setNum_pages(Integer.parseInt(textFieldNumPages.getText()));
-        newBook.setRating_count(Integer.parseInt(textFieldRatingsCount.getText()));
-        newBook.setText_review_count(Integer.parseInt(textFieldTextReviewCount.getText()));
-        newBook.setQuantity(Integer.parseInt(textFieldQuantity.getText()));
-
-        return newBook;
-
-    }
-
-
-    private void addBook()
-    {
-        if (objectOutputStream != null && objectInputStream != null) {
-            try {
-
-                objectOutputStream.writeObject(new Parcel(Command.ADD, Table.BOOK,fillBookObject()));
-            } catch (IOException ex) {
-                System.out.println("IOException " + ex);
-            }
-
-            //receive reply from server
-            receiveReply();
-
-        } else {
-            System.out.println("You must connect to the server first!!");
-        }
-
-    }
-
-    private void updateBook()
-    {
-        if (objectOutputStream != null && objectInputStream != null) {
-            try {
-
-                objectOutputStream.writeObject(new Parcel(Command.UPDATE, Table.BOOK,fillBookObject()));
-            } catch (IOException ex) {
-                System.out.println("IOException " + ex);
-            }
-
-            //receive reply from server
-            receiveReply();
-
-        } else {
-            System.out.println("You must connect to the server first!!");
-        }
-
-    }
-
-    private void deleteBook()
-    {
-
-        if (objectOutputStream != null && objectInputStream != null) {
-
-            Book newBook = new Book();
-
-            newBook.setBookId(Integer.parseInt(textFieldBookId.getText()));
-
-            try {
-
-                objectOutputStream.writeObject(new Parcel(Command.DELETE, Table.BOOK,newBook));
-
-            } catch (IOException ex) {
-                System.out.println("IOException " + ex);
-            }
-
-            //receive reply from server
-            receiveReply();
-
-        } else {
-            System.out.println("You must connect to the server first!!");
-        }
-
-
-
-    }
-
-
-
     private void getPersonTable()
     {
         if (objectOutputStream != null && objectInputStream != null) {
@@ -915,89 +871,6 @@ public class Client {
 
     }
 
-    private Object fillPersonObject() {
-        Person newPerson = new Person();
-        newPerson.setPersonId(Integer.parseInt(textFieldPersonId.getText()));
-        newPerson.setFirst_name(textFieldFirstName.getText());
-        newPerson.setLast_name(textFieldLastName.getText());
-        newPerson.setLibrary_card(Double.parseDouble(textFieldLibraryCard.getText()));
-
-        return newPerson;
-    }
-
-
-
-    private void addPerson()
-    {
-        if (objectOutputStream != null && objectInputStream != null){
-
-            try {
-
-                objectOutputStream.writeObject(new Parcel(Command.ADD, Table.PERSON,fillPersonObject()));
-            } catch (IOException ex) {
-                System.out.println("IOException " + ex);
-            }
-
-            receiveReply();
-
-        } else {
-            System.out.println("You must connect to the server first!!");
-        }
-
-    }
-
-    private void updatePerson()
-    {
-
-
-        if (objectOutputStream != null && objectInputStream != null){
-
-            try {
-
-                objectOutputStream.writeObject(new Parcel(Command.UPDATE, Table.PERSON,fillPersonObject()));
-            } catch (IOException ex) {
-                System.out.println("IOException " + ex);
-            }
-
-               receiveReply();
-
-        } else {
-            System.out.println("You must connect to the server first!!");
-        }
-
-
-
-    }
-
-    private void deletePerson()
-    {
-        Person personObj = new Person();
-        personObj.setPersonId(Integer.parseInt(textFieldPersonId.getText()));
-
-
-        if (objectOutputStream != null && objectInputStream != null){
-
-            try {
-
-                objectOutputStream.writeObject(new Parcel(Command.DELETE, Table.PERSON,fillPersonObject()));
-            } catch (IOException ex) {
-                System.out.println("IOException " + ex);
-            }
-
-            receiveReply();
-
-        } else {
-            System.out.println("You must connect to the server first!!");
-        }
-
-
-
-    }
-
-
-
-
-
     private void getOnLoanTable()
     {
         if (objectOutputStream != null && objectInputStream != null) {
@@ -1048,83 +921,148 @@ public class Client {
     }
 
 
-    private Object fillLoanObject()
+    private Object fillBookObject(Command command) {
+        Book newBook = new Book();
+
+        if (command == Command.ADD) {
+            newBook.setTitle(textFieldTitle.getText());
+            newBook.setAuthors(textFieldAuthors.getText());
+            newBook.setAverage_rating(Float.parseFloat(textFieldAverageRatings.getText()));
+            newBook.setIsbn(Double.parseDouble(textFieldIsbn.getText()));
+            newBook.setIsbn13(Double.parseDouble(textFieldIsbn13.getText()));
+            newBook.setLanguage_code(textFieldLanguageCode.getText());
+            newBook.setNum_pages(Integer.parseInt(textFieldNumPages.getText()));
+            newBook.setRating_count(Integer.parseInt(textFieldRatingsCount.getText()));
+            newBook.setText_review_count(Integer.parseInt(textFieldTextReviewCount.getText()));
+            newBook.setQuantity(Integer.parseInt(textFieldQuantity.getText()));
+
+        } else if((command == Command.UPDATE) || (command == Command.DELETE)) {
+
+            newBook.setBookId(Integer.parseInt(textFieldBookId.getText()));
+            newBook.setTitle(textFieldTitle.getText());
+            newBook.setAuthors(textFieldAuthors.getText());
+            newBook.setAverage_rating(Float.parseFloat(textFieldAverageRatings.getText()));
+            newBook.setIsbn(Double.parseDouble(textFieldIsbn.getText()));
+            newBook.setIsbn13(Double.parseDouble(textFieldIsbn13.getText()));
+            newBook.setLanguage_code(textFieldLanguageCode.getText());
+            newBook.setNum_pages(Integer.parseInt(textFieldNumPages.getText()));
+            newBook.setRating_count(Integer.parseInt(textFieldRatingsCount.getText()));
+            newBook.setText_review_count(Integer.parseInt(textFieldTextReviewCount.getText()));
+            newBook.setQuantity(Integer.parseInt(textFieldQuantity.getText()));
+
+
+
+        }
+
+        return newBook;
+    }
+
+
+
+
+    private Object fillPersonObject(Command command) {
+        Person newPerson = new Person();
+
+        if (command == Command.ADD)
+        {
+            newPerson.setFirst_name(textFieldFirstName.getText());
+            newPerson.setLast_name(textFieldLastName.getText());
+            newPerson.setLibrary_card(Double.parseDouble(textFieldLibraryCard.getText()));
+
+        }
+        else if((command == Command.UPDATE) || (command == Command.DELETE)) {
+
+            newPerson.setPersonId(Integer.parseInt(textFieldPersonId.getText()));
+            newPerson.setFirst_name(textFieldFirstName.getText());
+            newPerson.setLast_name(textFieldLastName.getText());
+            newPerson.setLibrary_card(Double.parseDouble(textFieldLibraryCard.getText()));
+        }
+
+        return newPerson;
+    }
+
+
+    private Object fillLoanObject(Command command)
     {
 
         On_loan newLoan = new On_loan();
-        newLoan.setLoan_Id(Integer.parseInt(textFieldLoanId.getText()));
-        newLoan.setBook_Id(Integer.parseInt(textFieldBookId2.getText()));
-        newLoan.setPerson_Id(Integer.parseInt(textFieldPersonId2.getText()));
-        newLoan.setLoan_Period(Integer.parseInt(textFieldLoanPeriod.getText()));
-        newLoan.setLoan_Start(textFieldLoanStart.getText());
-        newLoan.setLoan_End(textFieldLoanEnd.getText());
-        newLoan.setReturned_Date(textFieldReturnedDate.getText());
-        newLoan.setReturn_Status(status.getEditor().getItem().toString());
+
+        if(command == Command.ADD)
+        {
+            newLoan.setBook_Id(Integer.parseInt(textFieldBookId2.getText()));
+            newLoan.setPerson_Id(Integer.parseInt(textFieldPersonId2.getText()));
+            newLoan.setLoan_Period(Integer.parseInt(textFieldLoanPeriod.getText()));
+            newLoan.setLoan_Start(textFieldLoanStart.getText());
+            newLoan.setLoan_End(textFieldLoanEnd.getText());
+            newLoan.setReturned_Date(textFieldReturnedDate.getText());
+            newLoan.setReturn_Status(status.getEditor().getItem().toString());
+
+
+        }
+
+        else if((command == Command.UPDATE) || (command == Command.DELETE)) {
+
+            newLoan.setLoan_Id(Integer.parseInt(textFieldLoanId.getText()));
+            newLoan.setBook_Id(Integer.parseInt(textFieldBookId2.getText()));
+            newLoan.setPerson_Id(Integer.parseInt(textFieldPersonId2.getText()));
+            newLoan.setLoan_Period(Integer.parseInt(textFieldLoanPeriod.getText()));
+            newLoan.setLoan_Start(textFieldLoanStart.getText());
+            newLoan.setLoan_End(textFieldLoanEnd.getText());
+            newLoan.setReturned_Date(textFieldReturnedDate.getText());
+            newLoan.setReturn_Status(status.getEditor().getItem().toString());
+        }
 
         return newLoan;
 
     }
 
+    private void sendToServer(Command command, Table table, Object object)
+    {
 
-
-    private void addLoan(){
-
-        if (objectOutputStream != null && objectInputStream != null){
-
+        if (objectOutputStream != null && objectInputStream != null) {
             try {
-                objectOutputStream.writeObject(new Parcel(Command.ADD, Table.ONLOAN,fillLoanObject()));
+
+                objectOutputStream.writeObject(new Parcel(command, table,object));
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
             }
 
-            // receive reply from server
-           receiveReply();
-        } else {
-            System.out.println("You must connect to the server first!!");
-        }
+            //receive reply from server
+            Parcel reply = null;
 
-    }
-
-    private void updateLoan(){
-
-        if (objectOutputStream != null && objectInputStream != null){
-
+            System.out.println("Status: waiting for reply from server");
             try {
-                objectOutputStream.writeObject(new Parcel(Command.UPDATE, Table.ONLOAN,fillLoanObject()));
+                reply = (Parcel) objectInputStream.readObject();
+
+
+                System.out.println("Status: received reply from server");
+
+
             } catch (IOException ex) {
                 System.out.println("IOException " + ex);
+            } catch (ClassNotFoundException ex) {
+                System.out.println("ClassNotFoundException " + ex);
             }
 
-            // receive reply from server
 
-            receiveReply();
-        } else {
-            System.out.println("You must connect to the server first!!");
-        }
+            if (reply != null) {
 
-    }
+                try {
 
-    private void deleteLoan(){
+                    System.out.println(reply.getCommand());
 
-        if (objectOutputStream != null && objectInputStream != null){
+                } catch (NullPointerException ex) {
 
-            try {
-                objectOutputStream.writeObject(new Parcel(Command.DELETE, Table.ONLOAN,fillLoanObject()));
-            } catch (IOException ex) {
-                System.out.println("IOException " + ex);
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
-            // receive reply from server
-
-            receiveReply();
         } else {
             System.out.println("You must connect to the server first!!");
         }
 
 
     }
-
-
 
     private void reconnectToServer() {
 
