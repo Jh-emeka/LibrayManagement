@@ -4,9 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import java.sql.SQLException;
-
-    /**
+/**
      * The purpose of this class is to encapsulate connecting to the SQLite database.
      *
      * @author Horsfall Chukwuemeka

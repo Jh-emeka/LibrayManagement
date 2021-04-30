@@ -21,13 +21,17 @@ public class Person implements Serializable {
 
     }
 
+    public Person() {
+
+    }
+
 
     public static Person newPersonFromResultSet(ResultSet resultSet) throws SQLException {
         return new Person(
                 resultSet.getInt(1),
                 resultSet.getString(2),
                 resultSet.getString(3),
-                resultSet.getDouble(4));
+                resultSet.getInt(4));
     }
 
 

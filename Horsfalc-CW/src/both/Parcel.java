@@ -11,6 +11,13 @@ public class  Parcel implements Serializable {
 
     private  Object newData;
 
+    public Parcel(Command command)
+    {
+
+        this.command = command;
+
+    }
+
     public Parcel(Command command, Table table, Object newData){
 
         this.command = command;

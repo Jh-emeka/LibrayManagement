@@ -2,6 +2,7 @@ package Serverpkg;
 import both.Book;
 import both.On_loan;
 import both.Person;
+import both.LoanDetails;
 
 
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class ThreadedServer {
      * Let's just hard-code a simple HashMap<Keys, Values> to act as a lookup
      * table for the data to send.
      */
-    public synchronized List<Book> initBooks() {
+    public synchronized static List<Book> getBooks() {
 
         ArrayList<Book> books = new ArrayList<>();
         String selectSQL = "SELECT * FROM books "; // lets just get the first 10 records for testing
@@ -60,7 +61,7 @@ public class ThreadedServer {
         return books;
     }
 
-    public synchronized List<Person> initPerson() {
+    public synchronized static List<Person> getPerson() {
 
         ArrayList<Person> person = new ArrayList<>();
         String selectSQL = "SELECT * FROM person "; // lets just get the first 10 records for testing
@@ -80,7 +81,7 @@ public class ThreadedServer {
         return person;
     }
 
-    public synchronized List<On_loan> initOnLoan() {
+    public synchronized static List<On_loan> getOnLoan() {
 
         ArrayList<On_loan> onLoan = new ArrayList<>();
         String selectSQL = "SELECT * FROM on_loan "; // lets just get the first 10 records for testing
@@ -101,14 +102,52 @@ public class ThreadedServer {
         return onLoan;
     }
 
+    public synchronized static  List<LoanDetails> initLoanDetails(On_loan loanId){
+
+
+        ArrayList<LoanDetails> loanDetails = new ArrayList<>();
+
+        String selectSQL = "SELECT on_loan.loan_id, person.first_name,person.last_name, books.title,on_loan.return_status" +
+                " FROM on_loan " +
+                "INNER JOIN person ON on_loan.person_id=person.person_id " +
+                "INNER JOIN books ON on_loan.book_id=books.book_id " +
+                "WHERE on_loan.loan_id = ?";
+
+
+        try (Connection conn = ConnectionFactory.getConnection(); // auto close the connection object after try
+             PreparedStatement prep = conn.prepareStatement(selectSQL)) {
+
+            prep.setInt(1, loanId.getLoan_Id());
+
+            ResultSet resultSet = prep.executeQuery();
+
+            while (resultSet.next()) {
+
+                loanDetails.add(LoanDetails.newLoanDetailsFromResultSet(resultSet));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Serverpkg.ThreadedServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return loanDetails;
+
+    }
+
+
+
     public synchronized static void insertBook(Book newBook)
    {
       String insertSQL = "INSERT INTO books (title, authors, average_rating, isbn, isbn13, language_code, `#num_pages`, ratings_count, text_reviews_count, quantity) "
 
                           + "VALUES (?,?,?,?,?,?,?,?,?,?)";
 
+
+
+
       try (Connection conn = ConnectionFactory.getConnection(); // auto close the connection object after try
            PreparedStatement prep = conn.prepareStatement(insertSQL)) {
+
+
 
         prep.setString(1, newBook.getTitle());
         prep.setString(2, newBook.getAuthors());
@@ -275,6 +314,8 @@ public class ThreadedServer {
 
          String deleteSQL = "DELETE FROM books WHERE book_id = ?";
 
+
+
        try (Connection conn = ConnectionFactory.getConnection(); // auto close the connection object after try
             PreparedStatement prep = conn.prepareStatement(deleteSQL)) {
 
@@ -334,7 +375,7 @@ public class ThreadedServer {
     private void connectToClients() {
         System.out.println("Server: Server starting.");
 
-        try (ServerSocket serverSocket = new ServerSocket(4000)) {
+        try (ServerSocket serverSocket = new ServerSocket(5000)) {
 
             while (true) {
                 System.out.println("Server: Waiting for connecting client...");
@@ -342,7 +383,7 @@ public class ThreadedServer {
                 try {
                     Socket socket = serverSocket.accept();
 
-                    ClientHandler clientHandler = new ClientHandler(socket,initBooks(),initPerson(),initOnLoan());
+                    ClientHandler clientHandler = new ClientHandler(socket);
                     Thread connectionThread = new Thread(clientHandler);
                     connectionThread.start(); // thread goes into a ready state
                 } catch (IOException ex) {

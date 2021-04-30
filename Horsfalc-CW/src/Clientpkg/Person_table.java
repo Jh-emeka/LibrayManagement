@@ -13,6 +13,9 @@ public class Person_table extends AbstractTableModel {
 
 
     public void readData(ArrayList<Person> data) {
+
+        personData.clear();
+
         for (Person datum : data) {
 
             int personId = datum.getPersonId();
@@ -58,6 +61,14 @@ public class Person_table extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         personData.get(rowIndex)[columnIndex] = aValue.toString();
+    }
+
+    public void removeRow(int rowIndex)
+    {
+
+        personData.remove(rowIndex);
+
+
     }
 
 }

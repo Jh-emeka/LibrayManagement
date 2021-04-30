@@ -2,6 +2,11 @@ package both;
 
 public enum Command {
 
-    SELECT
+    SUCCESS,
+    SELECT,
+    ADD,
+    UPDATE,
+    DELETE,
+
 
 }

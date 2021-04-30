@@ -3,7 +3,7 @@ package both;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
+
 
 public class On_loan implements Serializable {
 
@@ -31,6 +31,10 @@ public class On_loan implements Serializable {
 
    }
 
+    public On_loan() {
+
+    }
+
     public static On_loan newOnLoanFromResultSet(ResultSet resultSet) throws SQLException {
 
 
@@ -56,6 +60,7 @@ public class On_loan implements Serializable {
     public void setLoan_Id(int loan_Id) {
         this.loan_Id = loan_Id;
     }
+
 
     public int getBook_Id() {
         return book_Id;
@@ -89,8 +94,7 @@ public class On_loan implements Serializable {
     {
 
 
-//        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-//        formatter.format(loan_Start);
+
 
         this.loan_Start = loan_Start;
 

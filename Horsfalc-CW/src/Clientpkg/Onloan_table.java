@@ -5,6 +5,7 @@ import both.On_loan;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Onloan_table extends AbstractTableModel {
 
@@ -14,6 +15,9 @@ public class Onloan_table extends AbstractTableModel {
 
 
     public void readData(ArrayList<On_loan> data) {
+
+        onLoanData.clear();
+
         for (On_loan datum : data) {
 
             int loan_id = datum.getLoan_Id();
@@ -71,5 +75,14 @@ public class Onloan_table extends AbstractTableModel {
     public void fireTableRowsDeleted(int firstRow, int lastRow) {
         super.fireTableRowsDeleted(firstRow, lastRow);
     }
+
+    public void removeRow(int rowIndex)
+    {
+
+        onLoanData.remove(rowIndex);
+
+
+    }
+
 
 }

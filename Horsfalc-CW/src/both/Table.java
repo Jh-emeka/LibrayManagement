@@ -4,6 +4,7 @@ public enum Table {
 
     BOOK,
     PERSON,
-    ONLOAN
+    ONLOAN,
+    JOIN
 
 }

@@ -3,6 +3,7 @@ package Clientpkg;
 import both.Book;
 
 
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 
@@ -15,20 +16,24 @@ public class Book_table extends AbstractTableModel {
 
 
 
+
     public Book_table() {
 
     }
 
 
     public void readData(ArrayList<Book> data) {
+
+        bookData.clear();
+
         for (Book datum : data) {
 
             int book_id = datum.getBookId();
             String title = datum.getTitle();
             String author = datum.getAuthors();
-            int average_rating = datum.getAverage_rating();
-            double isbn = datum.getIsbn();
-            double isbn13 = datum.getIsbn13();
+            float average_rating = datum.getAverage_rating();
+            int isbn =  (int) datum.getIsbn();
+            double isbn13 =  datum.getIsbn13();
             String language_code = datum.getLanguage_code();
             int num_pages = datum.getNum_pages();
             int ratings_count = datum.getRating_count();
@@ -83,5 +88,21 @@ public class Book_table extends AbstractTableModel {
         super.fireTableRowsDeleted(firstRow, lastRow);
     }
 
+    @Override
+    public void fireTableChanged(TableModelEvent e) {
+        super.fireTableChanged(e);
+    }
 
+    @Override
+    public void fireTableDataChanged() {
+        super.fireTableDataChanged();
+    }
+
+    public void removeRow(int rowIndex)
+    {
+
+        bookData.remove(rowIndex);
+
+
+    }
 }

@@ -9,7 +9,7 @@ public class Book implements Serializable {
     private int bookId; // primary key
     private String title;
     private String authors;
-    private int average_rating;
+    private float average_rating;
     private double isbn;
     private double isbn13;
     private String language_code;
@@ -18,7 +18,13 @@ public class Book implements Serializable {
     private int text_review_count;
     private int quantity;
 
-    public Book(int bookId, String title, String authors, int average_rating, double isbn, double isbn13, String language_code, int num_pages, int rating_count, int text_review_count, int quantity ) {
+    public Book()
+    {
+
+
+    }
+
+    public Book(int bookId, String title, String authors, float average_rating, double isbn, double isbn13, String language_code, int num_pages, int rating_count, int text_review_count, int quantity ) {
 
         this.bookId = bookId;
         this.title = title;
@@ -38,7 +44,7 @@ public class Book implements Serializable {
                 resultSet.getInt(1),
                 resultSet.getString(2),
                 resultSet.getString(3),
-                resultSet.getInt(4),
+                resultSet.getFloat(4),
                 resultSet.getDouble(5),
                 resultSet.getDouble(6),
                 resultSet.getString(7),
@@ -73,11 +79,11 @@ public class Book implements Serializable {
         this.authors = authors;
     }
 
-    public int getAverage_rating() {
+    public float getAverage_rating() {
         return average_rating;
     }
 
-    public void setAverage_rating(int average_rating) {
+    public void setAverage_rating(float average_rating) {
         this.average_rating = average_rating;
     }
 

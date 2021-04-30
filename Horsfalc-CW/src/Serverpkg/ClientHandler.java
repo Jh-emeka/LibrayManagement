@@ -16,16 +16,12 @@ public class ClientHandler implements Runnable {
     private static int connectionCount = 0;
     private final int connectionNumber;
 
-    public List<Book> books;
-    public List<Person> person;
-    public List<On_loan> onLoan;
 
-    public ClientHandler(Socket clientSocket, List<Book> books,List<Person> person, List<On_loan> onLoan ) throws IOException {
+
+    public ClientHandler(Socket clientSocket) throws IOException {
 
         this.newSocket = clientSocket;
-        this.books = books;
-        this.person= person;
-        this.onLoan = onLoan;
+
 
         connectionCount++;
         connectionNumber = connectionCount;
@@ -53,15 +49,15 @@ public class ClientHandler implements Runnable {
                 System.out.println("Server: Read data from client: " + parcelRead + ".");
 
 
-                 Parcel ack; // Acknowledge to indicate success or fail
-
                 if ((parcelRead.getCommand() == Command.SELECT) && (parcelRead.getTable() == Table.BOOK)) {
 
                     List<Book> reply;
 
-                    reply = books;
+                    reply = ThreadedServer.getBooks();
 
                     objectOutputStream.writeObject(reply);
+
+
 
                 }
 
@@ -70,9 +66,11 @@ public class ClientHandler implements Runnable {
 
                     List<Person> reply;
 
-                    reply = person;
+                    reply = ThreadedServer.getPerson();
 
                     objectOutputStream.writeObject(reply);
+
+
 
 
                 }
@@ -82,113 +80,105 @@ public class ClientHandler implements Runnable {
 
                     List<On_loan> reply;
 
-                    reply = onLoan;
+                    reply = ThreadedServer.getOnLoan();
+
+                    objectOutputStream.writeObject(reply);
+
+
+
+
+                }
+
+                if((parcelRead.getCommand() == Command.SELECT) &&(parcelRead.getTable() == Table.JOIN))
+                {
+
+                    List<LoanDetails>reply;
+
+                    reply = ThreadedServer.initLoanDetails((On_loan) parcelRead.getNewData());
 
                     objectOutputStream.writeObject(reply);
 
 
                 }
 
-                if((parcelRead.getCommand() == Command.ADD) && (parcelRead.getTable() == Table.BOOK))
-                {
-
-                  ThreadedServer.insertBook((Book) parcelRead.getNewData());
-
-                  ack = new Parcel(Command.SUCCESS);
-
-                   objectOutputStream.writeObject(ack);
-
-                }
-
-                if((parcelRead.getCommand() == Command.ADD) && (parcelRead.getTable() == Table.PERSON)){
+                else if((parcelRead.getCommand() == Command.ADD) || (parcelRead.getCommand() == Command.UPDATE) || (parcelRead.getCommand() == Command.DELETE)) {
 
 
+                    if ((parcelRead.getCommand() == Command.ADD) && (parcelRead.getTable() == Table.BOOK)) {
 
-                    ThreadedServer.insertPerson((Person) parcelRead.getNewData());
-                    ack = new Parcel(Command.SUCCESS);
-
-                    objectOutputStream.writeObject(ack);
-
-                }
-
-                if((parcelRead.getCommand() == Command.ADD) && (parcelRead.getTable() == Table.ONLOAN)){
+                        ThreadedServer.insertBook((Book) parcelRead.getNewData());
 
 
-                    ThreadedServer.insertLoan((On_loan) parcelRead.getNewData());
-                    ack = new Parcel(Command.SUCCESS);
+                    }
 
-                    objectOutputStream.writeObject(ack);
-
-
-                }
-
-                if((parcelRead.getCommand() == Command.UPDATE) && (parcelRead.getTable() == Table.BOOK)){
-
-                    ThreadedServer.bookUpdate((Book) parcelRead.getNewData());
-
-                    ack = new Parcel(Command.SUCCESS);
-
-                    objectOutputStream.writeObject(ack);
-
-                }
-
-                if((parcelRead.getCommand() == Command.UPDATE) && (parcelRead.getTable() == Table.PERSON)){
-
-                    ThreadedServer.personUpdate((Person) parcelRead.getNewData());
-
-                    ack = new Parcel(Command.SUCCESS);
-
-                    objectOutputStream.writeObject(ack);
+                    if ((parcelRead.getCommand() == Command.ADD) && (parcelRead.getTable() == Table.PERSON)) {
 
 
-
-                }
-
-                if((parcelRead.getCommand() == Command.UPDATE) && (parcelRead.getTable() == Table.ONLOAN)){
-
-                    ThreadedServer.loanUpdate((On_loan) parcelRead.getNewData());
-
-                    ack = new Parcel(Command.SUCCESS);
-
-                    objectOutputStream.writeObject(ack);
-
-                }
-
-                if((parcelRead.getCommand() == Command.DELETE) && (parcelRead.getTable() == Table.BOOK)){
+                        ThreadedServer.insertPerson((Person) parcelRead.getNewData());
 
 
-                    ThreadedServer.deleteBook((Book) parcelRead.getNewData());
+                    }
 
-                    ack = new Parcel(Command.SUCCESS);
-
-                    objectOutputStream.writeObject(ack);
+                    if ((parcelRead.getCommand() == Command.ADD) && (parcelRead.getTable() == Table.ONLOAN)) {
 
 
-                }
-
-                if((parcelRead.getCommand() == Command.DELETE) && (parcelRead.getTable() == Table.PERSON)){
+                        ThreadedServer.insertLoan((On_loan) parcelRead.getNewData());
 
 
-                    ThreadedServer.deletePerson((Person) parcelRead.getNewData());
+                    }
 
-                    ack = new Parcel(Command.SUCCESS);
+                    if ((parcelRead.getCommand() == Command.UPDATE) && (parcelRead.getTable() == Table.BOOK)) {
 
-                    objectOutputStream.writeObject(ack);
+                        ThreadedServer.bookUpdate((Book) parcelRead.getNewData());
+
+
+                    }
+
+                    if ((parcelRead.getCommand() == Command.UPDATE) && (parcelRead.getTable() == Table.PERSON)) {
+
+                        ThreadedServer.personUpdate((Person) parcelRead.getNewData());
+
+
+                    }
+
+                    if ((parcelRead.getCommand() == Command.UPDATE) && (parcelRead.getTable() == Table.ONLOAN)) {
+
+                        ThreadedServer.loanUpdate((On_loan) parcelRead.getNewData());
+
+
+                    }
+
+                    if ((parcelRead.getCommand() == Command.DELETE) && (parcelRead.getTable() == Table.BOOK)) {
+
+
+                        ThreadedServer.deleteBook((Book) parcelRead.getNewData());
+
+
+
+
+                    }
+
+                    if ((parcelRead.getCommand() == Command.DELETE) && (parcelRead.getTable() == Table.PERSON)) {
+
+
+                        ThreadedServer.deletePerson((Person) parcelRead.getNewData());
+
+
+                    }
+
+                    if ((parcelRead.getCommand() == Command.DELETE) && (parcelRead.getTable() == Table.ONLOAN)) {
+
+
+                        ThreadedServer.deleteLoan((On_loan) parcelRead.getNewData());
+
+
+                    }
+
+                    objectOutputStream.writeObject(new Parcel(Command.SUCCESS));
 
 
                 }
 
-                if((parcelRead.getCommand() == Command.DELETE) && (parcelRead.getTable() == Table.ONLOAN)){
-
-
-                    ThreadedServer.deleteLoan((On_loan) parcelRead.getNewData());
-
-                    ack = new Parcel(Command.SUCCESS);
-
-                    objectOutputStream.writeObject(ack);
-
-
-                }
 
             }
         } catch (SocketException | EOFException ex) {
